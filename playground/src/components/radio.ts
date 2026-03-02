@@ -15,6 +15,42 @@ interface RadioData {
 }
 
 export const radio = defineComponent<RadioData>("radio", {
+  skeleton(container) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "skeleton-radio";
+    wrapper.style.display = "flex";
+    wrapper.style.gap = "16px";
+    wrapper.style.padding = "8px 0";
+
+    for (let i = 0; i < 3; i++) {
+      const item = document.createElement("div");
+      item.style.display = "flex";
+      item.style.alignItems = "center";
+      item.style.gap = "6px";
+
+      const circle = document.createElement("div");
+      circle.className = "skeleton-line";
+      circle.style.width = "16px";
+      circle.style.height = "16px";
+      circle.style.borderRadius = "50%";
+      circle.style.flexShrink = "0";
+      circle.style.animationDelay = `${i * 0.1}s`;
+      item.appendChild(circle);
+
+      const label = document.createElement("div");
+      label.className = "skeleton-line";
+      label.style.width = `${40 + Math.random() * 30}px`;
+      label.style.height = "14px";
+      label.style.animationDelay = `${i * 0.1}s`;
+      item.appendChild(label);
+
+      wrapper.appendChild(item);
+    }
+
+    container.appendChild(wrapper);
+    return { dispose: () => wrapper.remove() };
+  },
+
   setup: (args) => ({
     options: args[0] as string[],
     selected: (args[1] as string) ?? "",

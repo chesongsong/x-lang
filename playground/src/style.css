@@ -385,6 +385,37 @@ html, body {
   color: #66b1ff;
 }
 
+/* Component-specific skeletons: table */
+.skeleton-table {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.skeleton-table-header {
+  display: flex;
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--border);
+}
+
+.skeleton-table-row {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+
+.skeleton-table-row:last-child {
+  border-bottom: none;
+}
+
+.skeleton-table-cell {
+  flex: 1;
+  padding: 10px 14px;
+}
+
+.skeleton-table-header .skeleton-table-cell {
+  padding: 8px 14px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   #main {

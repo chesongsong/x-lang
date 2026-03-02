@@ -1,6 +1,8 @@
 import type {
   ComponentHandle,
   ComponentRenderer,
+  Disposable,
+  PendingData,
   RenderContext,
 } from "@x-lang/render";
 import { defineRenderable } from "./define-renderable.js";
@@ -32,10 +34,13 @@ export type RenderFn<T = unknown> = (
   ctx: RenderContext,
 ) => ComponentHandle<T>;
 
+export type SkeletonFn = (container: HTMLElement) => Disposable;
+
 export interface ComponentDefinition<T = unknown> {
   readonly name: string;
   readonly renderable: RenderableDefinition;
   readonly createRenderer: () => ComponentRenderer<T>;
+  readonly createSkeletonRenderer?: () => ComponentRenderer<PendingData>;
 }
 
 // ---------------------------------------------------------------------------
@@ -45,11 +50,13 @@ export interface ComponentDefinition<T = unknown> {
 export interface SimpleComponentOptions<T> {
   setup: SimpleSetup<T>;
   render: RenderFn<T>;
+  skeleton?: SkeletonFn;
 }
 
 export interface AdvancedComponentOptions<T> {
   setup: AdvancedSetup<T>;
   render: RenderFn<T>;
+  skeleton?: SkeletonFn;
 }
 
 export type ComponentOptions<T> =
@@ -77,6 +84,15 @@ export function defineComponent<T>(
 
   const renderable = defineRenderable(name, handler);
   const renderFn = options.render;
+  const skeletonFn = options.skeleton;
+
+  const createSkeletonRenderer = skeletonFn
+    ? () => ({
+        render(_data: PendingData, container: HTMLElement): Disposable {
+          return skeletonFn(container);
+        },
+      })
+    : undefined;
 
   return {
     name,
@@ -85,5 +101,6 @@ export function defineComponent<T>(
       render: (value: T, container: HTMLElement, ctx?: RenderContext) =>
         renderFn(value, container, ctx ?? { emit: () => {} }),
     }),
+    createSkeletonRenderer,
   };
 }

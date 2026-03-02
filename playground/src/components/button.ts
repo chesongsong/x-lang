@@ -11,6 +11,21 @@ interface ButtonData {
 }
 
 export const button = defineComponent<ButtonData>("button", {
+  skeleton(container) {
+    const wrapper = document.createElement("div");
+    wrapper.style.padding = "4px 0";
+
+    const btn = document.createElement("div");
+    btn.className = "skeleton-line";
+    btn.style.width = "80px";
+    btn.style.height = "32px";
+    btn.style.borderRadius = "4px";
+
+    wrapper.appendChild(btn);
+    container.appendChild(wrapper);
+    return { dispose: () => wrapper.remove() };
+  },
+
   setup: (args, named) => ({
     text: (named.text as string) ?? (args[0] as string) ?? "Button",
     type: (named.type as string) ?? (args[1] as string) ?? "primary",

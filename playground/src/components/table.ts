@@ -81,7 +81,45 @@ function resolveColumns(
   return { columns };
 }
 
+function createShimmerLine(width: string): HTMLDivElement {
+  const line = document.createElement("div");
+  line.className = "skeleton-line";
+  line.style.width = width;
+  return line;
+}
+
 export const table = defineComponent<RenderTableData>("table", {
+  skeleton(container) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "skeleton-table";
+
+    const header = document.createElement("div");
+    header.className = "skeleton-table-header";
+    for (let c = 0; c < 3; c++) {
+      const cell = document.createElement("div");
+      cell.className = "skeleton-table-cell";
+      cell.appendChild(createShimmerLine("60%"));
+      header.appendChild(cell);
+    }
+    wrapper.appendChild(header);
+
+    for (let r = 0; r < 4; r++) {
+      const row = document.createElement("div");
+      row.className = "skeleton-table-row";
+      for (let c = 0; c < 3; c++) {
+        const cell = document.createElement("div");
+        cell.className = "skeleton-table-cell";
+        cell.appendChild(createShimmerLine(`${50 + Math.random() * 40}%`));
+        cell.style.animationDelay = `${(r * 3 + c) * 0.05}s`;
+        row.appendChild(cell);
+      }
+      wrapper.appendChild(row);
+    }
+
+    container.appendChild(wrapper);
+    return { dispose: () => wrapper.remove() };
+  },
+
   setup: {
     execute(ctx: RenderableContext): RenderTableData {
       if (ctx.args.length < 1) {

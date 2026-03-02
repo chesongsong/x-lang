@@ -68,6 +68,12 @@ export class XLangApp {
       component.name,
       component.createRenderer as () => ComponentRenderer,
     );
+    if (component.createSkeletonRenderer) {
+      this.engine.registerSkeleton(
+        component.name,
+        component.createSkeletonRenderer,
+      );
+    }
     return this;
   }
 

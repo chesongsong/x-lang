@@ -6,6 +6,17 @@ interface TlinkData {
 }
 
 export const tlink = defineComponent<TlinkData>("tlink", {
+  skeleton(container) {
+    const line = document.createElement("div");
+    line.className = "skeleton-line";
+    line.style.width = `${100 + Math.random() * 60}px`;
+    line.style.height = "14px";
+    line.style.borderRadius = "2px";
+
+    container.appendChild(line);
+    return { dispose: () => line.remove() };
+  },
+
   setup: (args) => ({
     text: args[0] as string,
     url: args[1] as string,

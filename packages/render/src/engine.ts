@@ -3,8 +3,10 @@ import { ZValue, ZRenderable } from "@x-lang/interpreter";
 import type {
   ComponentFactory,
   ComponentHandle,
+  ComponentRenderer,
   Disposable,
   EventCallback,
+  PendingData,
   RenderContext,
 } from "./types.js";
 
@@ -14,12 +16,19 @@ export interface ComponentInstance {
   readonly handle: ComponentHandle;
 }
 
+const IDENTIFIER_RE =
+  /^[a-zA-Z_$\u4e00-\u9fff\u3400-\u4dbf][a-zA-Z0-9_$\u4e00-\u9fff\u3400-\u4dbf]*/;
+
 export class RenderEngine {
   private factory: ComponentFactory;
   private disposables: Disposable[] = [];
   private instances: ComponentInstance[] = [];
   private eventCallback: EventCallback | undefined;
   private kindCounters = new Map<string, number>();
+  private skeletonFactories = new Map<
+    string,
+    () => ComponentRenderer<PendingData>
+  >();
 
   constructor(factory: ComponentFactory) {
     this.factory = factory;
@@ -31,6 +40,13 @@ export class RenderEngine {
 
   setEventCallback(cb: EventCallback): void {
     this.eventCallback = cb;
+  }
+
+  registerSkeleton(
+    name: string,
+    factory: () => ComponentRenderer<PendingData>,
+  ): void {
+    this.skeletonFactories.set(name, factory);
   }
 
   getInstances(kind?: string): readonly ComponentInstance[] {
@@ -105,6 +121,22 @@ export class RenderEngine {
     content: string,
     container: HTMLElement,
   ): void {
+    const componentName = this.detectComponentName(content);
+
+    if (componentName) {
+      const skeletonFactory = this.skeletonFactories.get(componentName);
+      if (skeletonFactory) {
+        const wrapper = document.createElement("div");
+        wrapper.className = `render-segment render-pending render-pending-${componentName}`;
+        container.appendChild(wrapper);
+
+        const renderer = skeletonFactory();
+        const disposable = renderer.render({ language, content }, wrapper);
+        this.disposables.push(disposable);
+        return;
+      }
+    }
+
     const wrapper = document.createElement("div");
     wrapper.className = "render-segment render-pending";
     container.appendChild(wrapper);
@@ -112,6 +144,12 @@ export class RenderEngine {
     const renderer = this.factory.createPendingRenderer();
     const disposable = renderer.render({ language, content }, wrapper);
     this.disposables.push(disposable);
+  }
+
+  private detectComponentName(content: string): string | null {
+    const trimmed = content.trim();
+    const match = IDENTIFIER_RE.exec(trimmed);
+    return match ? match[0] : null;
   }
 
   private renderScope(
