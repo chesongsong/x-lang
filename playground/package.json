@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "dayjs": "^1.11.19",
     "@arco-design/web-vue": "^2.57.0",
     "@vitejs/plugin-vue": "^6.0.4",
     "@x-lang/core": "workspace:*",
