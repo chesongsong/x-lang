@@ -1,6 +1,6 @@
 <template>
   <div style="padding: 4px 0">
-    <ElButton :type="type ?? 'primary'" :size="size ?? 'default'" @click="handleClick">
+    <ElButton :type="(type ?? 'primary') as any" :size="(size ?? 'default') as any" @click="handleClick">
       {{ text }}
     </ElButton>
   </div>

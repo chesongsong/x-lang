@@ -1,0 +1,22 @@
+<template>
+  <AResult
+    :title="title"
+    :sub-title="subTitle || undefined"
+    :status="resultStatus"
+  />
+</template>
+
+<script setup lang="ts">
+import { computed } from "vue";
+import { Result as AResult } from "ant-design-vue";
+
+const props = defineProps<{
+  title: string;
+  subTitle: string;
+  icon: string;
+}>();
+
+const resultStatus = computed(() =>
+  (["success", "warning", "info", "error"].includes(props.icon) ? props.icon : "success") as "success" | "warning" | "info" | "error",
+);
+</script>

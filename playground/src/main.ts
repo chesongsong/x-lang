@@ -2,16 +2,7 @@ import * as monaco from "monaco-editor";
 import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
 import { XLangApp } from "@x-lang/core";
 import { ElementComponentFactory } from "./renderers/element-factory";
-import { table } from "./components/table/index";
-import { button } from "./components/button/index";
-import { radio } from "./components/radio/index";
-import { alert } from "./components/alert/index";
-import { progress } from "./components/progress/index";
-import { tag } from "./components/tag/index";
-import { statistic } from "./components/statistic/index";
-import { descriptions } from "./components/descriptions/index";
-import { result } from "./components/result/index";
-import { rate } from "./components/rate/index";
+import { createComponents, type UILib } from "./components/_registry";
 import { registerXLang, createXLangTheme, XLANG_ID } from "./monaco-lang";
 import "./style.css";
 
@@ -30,38 +21,33 @@ createXLangTheme();
 
 const statusEl = document.getElementById("event-status");
 
-const app = new XLangApp(new ElementComponentFactory());
+const sharedData = {
+  用户列表: [
+    { 姓名: "张三", 部门: "工程部", 薪资: 25000 },
+    { 姓名: "李四", 部门: "设计部", 薪资: 22000 },
+    { 姓名: "王五", 部门: "产品部", 薪资: 28000 },
+    { 姓名: "赵六", 部门: "工程部", 薪资: 30000 },
+  ],
+  公司名: "X-Lang 科技",
+  部门选项: ["全部", "工程部", "设计部", "产品部"],
+  当前部门: "全部",
+  公司信息: { 名称: "X-Lang 科技", 行业: "软件开发", 成立年份: 2024, 地址: "上海市浦东新区" },
+  项目进度: 78,
+  团队评分: 4.5,
+};
 
-app
-  .use(table)
-  .use(button)
-  .use(radio)
-  .use(alert)
-  .use(progress)
-  .use(tag)
-  .use(statistic)
-  .use(descriptions)
-  .use(result)
-  .use(rate)
-  .provide({
-    用户列表: [
-      { 姓名: "张三", 部门: "工程部", 薪资: 25000 },
-      { 姓名: "李四", 部门: "设计部", 薪资: 22000 },
-      { 姓名: "王五", 部门: "产品部", 薪资: 28000 },
-      { 姓名: "赵六", 部门: "工程部", 薪资: 30000 },
-    ],
-    公司名: "X-Lang 科技",
-    部门选项: ["全部", "工程部", "设计部", "产品部"],
-    当前部门: "全部",
-    公司信息: { 名称: "X-Lang 科技", 行业: "软件开发", 成立年份: 2024, 地址: "上海市浦东新区" },
-    项目进度: 78,
-    团队评分: 4.5,
-  })
-  .on("radio", "change", (value) => {
+const appRef: { current: XLangApp } = { current: null! };
+
+function buildApp(lib: UILib): XLangApp {
+  const newApp = new XLangApp(new ElementComponentFactory());
+  for (const comp of createComponents(lib)) {
+    newApp.use(comp);
+  }
+  newApp.provide(sharedData);
+  newApp.on("radio", "change", (value) => {
     if (statusEl) {
       statusEl.textContent = `当前选择：${value}`;
     }
-
     const filter = value as string;
     const all = [
       { 姓名: "张三", 部门: "工程部", 薪资: 25000 },
@@ -70,10 +56,13 @@ app
       { 姓名: "赵六", 部门: "工程部", 薪资: 30000 },
     ];
     const filtered = filter === "全部" ? all : all.filter((u) => u.部门 === filter);
-
-    app.provide({ 用户列表: filtered, 当前部门: filter });
-    requestAnimationFrame(() => app.run(editor.getValue(), output));
+    appRef.current.provide({ 用户列表: filtered, 当前部门: filter });
+    requestAnimationFrame(() => appRef.current.run(editor.getValue(), output));
   });
+  return newApp;
+}
+
+appRef.current = buildApp("element");
 
 // ---------------------------------------------------------------------------
 // 2. Editor & Layout
@@ -159,6 +148,12 @@ button(text = "主要按钮", type = "primary")
 button(text = "成功按钮", type = "success")
 \`\`\`
 
+## 卡片
+
+\`\`\`x-lang
+card(title = "项目概要", content = "本季度共完成 3 个里程碑，团队整体表现优异。")
+\`\`\`
+
 ## 结果页
 
 \`\`\`x-lang
@@ -230,6 +225,10 @@ button(text = "导出报告", type = "primary")
 button(text = "发送邮件", type = "success")
 \`\`\`
 
+\`\`\`x-lang
+card(title = "项目概要", content = "本季度共完成 3 个里程碑，团队整体表现优异。")
+\`\`\`
+
 ## 代码演示
 
 \`\`\`x-lang
@@ -284,7 +283,7 @@ const editor = monaco.editor.create(editorContainer, {
 
 function execute() {
   try {
-    app.run(editor.getValue(), output);
+    appRef.current.run(editor.getValue(), output);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
     output.innerHTML = "";
@@ -323,7 +322,7 @@ function startStream(): void {
   btnStop.style.display = "";
   streamStatus.textContent = "AI 正在输出...";
 
-  app.reset();
+  appRef.current.reset();
   editor.setValue("");
   editor.updateOptions({ readOnly: true });
   output.innerHTML = "";
@@ -420,7 +419,27 @@ btnStream.addEventListener("click", startStream);
 btnStop.addEventListener("click", stopStream);
 
 // ---------------------------------------------------------------------------
-// 4. Divider drag
+// 4. UI library switcher
+// ---------------------------------------------------------------------------
+
+function switchLib(lib: UILib) {
+  appRef.current = buildApp(lib);
+  document.querySelectorAll(".lib-btn").forEach((btn) => {
+    const el = btn as HTMLButtonElement;
+    el.classList.toggle("active", el.dataset.lib === lib);
+  });
+  execute();
+}
+
+document.querySelectorAll(".lib-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const lib = (btn as HTMLButtonElement).dataset.lib as UILib;
+    if (lib) switchLib(lib);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 5. Divider drag
 // ---------------------------------------------------------------------------
 
 let isDragging = false;

@@ -2,7 +2,7 @@
   <div style="padding: 6px 0">
     <ElProgress
       :percentage="percentage"
-      :status="status || undefined"
+      :status="(status || undefined) as any"
       :stroke-width="strokeWidth"
       :text-inside="textInside"
     />
