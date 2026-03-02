@@ -14,6 +14,7 @@ import type {
   AssignmentExpression,
   Identifier,
   CallArgument,
+  Property,
 } from "@x-lang/types";
 
 export class ScopeResolver {
@@ -202,7 +203,7 @@ export class ScopeResolver {
       case "ObjectExpression":
         return {
           ...expr,
-          properties: expr.properties.map((p) => ({
+          properties: expr.properties.map((p: Property) => ({
             ...p,
             value: this.resolveExpression(p.value),
           })),

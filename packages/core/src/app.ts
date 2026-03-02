@@ -57,7 +57,7 @@ export class XLangApp {
   constructor(baseFactory: ComponentFactory) {
     this.factory = new AppComponentFactory(baseFactory);
     this.engine = new RenderEngine(this.factory);
-    this.engine.setEventCallback((kind, event, payload) => {
+    this.engine.setEventCallback((kind: string, event: string, payload: unknown) => {
       this.bus.emit(EventBus.buildKey(kind, event), payload);
     });
   }
@@ -98,7 +98,7 @@ export class XLangApp {
 
   updateInstance(kind: string, index: number, data: unknown): void {
     const instances = this.engine.getInstances(kind);
-    const target = instances.find((i) => i.index === index);
+    const target = instances.find((i: ComponentInstance) => i.index === index);
     if (target?.handle.update) {
       target.handle.update(data);
     }

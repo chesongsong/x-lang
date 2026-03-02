@@ -12,7 +12,7 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@x-lang/types": "*",
+    "@x-lang/types": "workspace:*",
     "dayjs": "^1.11.19"
   }
 }

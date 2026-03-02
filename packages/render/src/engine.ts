@@ -182,6 +182,8 @@ export class RenderEngine {
         const r = segment.result;
         return `sc\0${r.index}\0${r.value.toString()}\0${r.error ?? ""}`;
       }
+      default:
+        return "";
     }
   }
 

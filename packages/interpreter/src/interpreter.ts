@@ -20,6 +20,8 @@ import type {
   ArrayExpression,
   ObjectExpression,
   ArrowFunctionExpression,
+  CallArgument,
+  Parameter,
 } from "@x-lang/types";
 import { Environment } from "./environment.js";
 import { ZValue } from "./values/base.js";
@@ -100,6 +102,8 @@ export class Interpreter implements Evaluator {
         throw new ContinueSignal();
       case "BlockStatement":
         return this.executeBlock(stmt, env);
+      default:
+        return ZNull.instance;
     }
   }
 
@@ -118,7 +122,7 @@ export class Interpreter implements Evaluator {
   ): ZValue {
     const fn = new ZFunction(
       stmt.name,
-      stmt.params.map((p) => p.name),
+      stmt.params.map((p: Parameter) => p.name),
       stmt.body,
       env,
     );
@@ -249,6 +253,8 @@ export class Interpreter implements Evaluator {
         return this.evaluateObject(expr, env);
       case "ArrowFunctionExpression":
         return this.evaluateArrowFunction(expr, env);
+      default:
+        return ZNull.instance;
     }
   }
 
@@ -291,6 +297,8 @@ export class Interpreter implements Evaluator {
         return left.isTruthy() ? right : left;
       case "||":
         return left.isTruthy() ? left : right;
+      default:
+        return ZNull.instance;
     }
   }
 
@@ -301,6 +309,8 @@ export class Interpreter implements Evaluator {
         return new ZNumber(-arg.toNumber());
       case "!":
         return new ZBool(!arg.isTruthy());
+      default:
+        return ZNull.instance;
     }
   }
 
@@ -401,7 +411,7 @@ export class Interpreter implements Evaluator {
       throw new Error("Not a function");
     }
 
-    const args = expr.arguments.map((a) => {
+    const args = expr.arguments.map((a: CallArgument) => {
       if (a.type === "NamedArgument") return this.evaluate(a.value, env);
       return this.evaluate(a, env);
     });
@@ -450,7 +460,7 @@ export class Interpreter implements Evaluator {
   }
 
   private evaluateArray(expr: ArrayExpression, env: Environment): ZValue {
-    return new ZArray(expr.elements.map((el) => this.evaluate(el, env)));
+    return new ZArray(expr.elements.map((el: Expression) => this.evaluate(el, env)));
   }
 
   private evaluateObject(expr: ObjectExpression, env: Environment): ZValue {
@@ -467,7 +477,7 @@ export class Interpreter implements Evaluator {
   ): ZValue {
     return new ZFunction(
       "<anonymous>",
-      expr.params.map((p) => p.name),
+      expr.params.map((p: Parameter) => p.name),
       expr.body,
       env,
     );

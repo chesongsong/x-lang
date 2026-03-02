@@ -14,7 +14,7 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@x-lang/interpreter": "*"
+    "@x-lang/interpreter": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.0"

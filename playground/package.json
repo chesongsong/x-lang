@@ -11,8 +11,8 @@
   "dependencies": {
     "@arco-design/web-vue": "^2.57.0",
     "@vitejs/plugin-vue": "^6.0.4",
-    "@x-lang/core": "*",
-    "@x-lang/render": "*",
+    "@x-lang/core": "workspace:*",
+    "@x-lang/render": "workspace:*",
     "ant-design-vue": "^4.2.6",
     "element-plus": "^2.13.2",
     "monaco-editor": "^0.55.1",

@@ -10,8 +10,8 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@x-lang/types": "*",
-    "@x-lang/parser": "*",
+    "@x-lang/types": "workspace:*",
+    "@x-lang/parser": "workspace:*",
     "antlr4ng": "^3.0.16"
   }
 }
