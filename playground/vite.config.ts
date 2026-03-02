@@ -12,6 +12,6 @@ export default defineConfig({
     open: true,
   },
   resolve: {
-    preserveSymlinks: true,
+    preserveSymlinks: false,
   },
 });
