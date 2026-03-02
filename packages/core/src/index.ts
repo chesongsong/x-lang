@@ -1,9 +1,9 @@
 // High-level API
-export { parse, run, tokenize } from "./zlang.js";
-export type { ParseOptions, RunOptions, ParseOutput, RunOutput } from "./zlang.js";
+export { parse, run, tokenize } from "./xlang.js";
+export type { ParseOptions, RunOptions, ParseOutput, RunOutput } from "./xlang.js";
 
 // Application facade
-export { ZLangApp } from "./app.js";
+export { XLangApp } from "./app.js";
 
 // Component definition API (all-in-one: setup + render)
 export { defineComponent } from "./define-component.js";
@@ -20,16 +20,24 @@ export type {
 // Render types (re-export for convenience)
 export type {
   Disposable,
+  ComponentHandle,
+  RenderContext,
+  EventCallback,
   ComponentRenderer,
   ComponentFactory,
+  ComponentInstance,
   CodeBlockData,
   PendingData,
-} from "@z-lang/render";
-export { RenderEngine } from "@z-lang/render";
+} from "@x-lang/render";
+export { RenderEngine } from "@x-lang/render";
+
+// Event system
+export { EventBus } from "./event-bus.js";
+export type { EventHandler } from "./event-bus.js";
 
 // AST builder, scope resolver & visitor
-export { ASTBuilder, ScopeResolver } from "@z-lang/ast";
-export { type ASTVisitor, visitNode } from "@z-lang/ast";
+export { ASTBuilder, ScopeResolver } from "@x-lang/ast";
+export { type ASTVisitor, visitNode } from "@x-lang/ast";
 
 // Value domain — basic types
 export {
@@ -43,10 +51,10 @@ export {
   ZFunction,
   ZDate,
   box,
-} from "@z-lang/interpreter";
+} from "@x-lang/interpreter";
 
 // Renderables — UI-renderable value types
-export { ZRenderable, ZRenderCustom } from "@z-lang/interpreter";
+export { ZRenderable, ZRenderCustom } from "@x-lang/interpreter";
 
 // Renderable definition API
 export { defineRenderable } from "./define-renderable.js";
@@ -58,21 +66,21 @@ export type {
 } from "./define-renderable.js";
 
 // Interpreter & execution
-export { Interpreter, execute } from "@z-lang/interpreter";
+export { Interpreter, execute } from "@x-lang/interpreter";
 export type {
   ExecuteOptions,
   ScopeResult,
   OutputSegment,
   MarkdownSegment,
   ScopeSegment,
-} from "@z-lang/interpreter";
+} from "@x-lang/interpreter";
 
 // Builtins
-export { BuiltinRegistry } from "@z-lang/interpreter";
-export type { BuiltinFunction, Evaluator } from "@z-lang/interpreter";
+export { BuiltinRegistry } from "@x-lang/interpreter";
+export type { BuiltinFunction, Evaluator } from "@x-lang/interpreter";
 
 // Environment
-export { Environment } from "@z-lang/interpreter";
+export { Environment } from "@x-lang/interpreter";
 
 // All AST types
 export type {
@@ -121,23 +129,23 @@ export type {
   ArrowFunctionExpression,
   Expression,
   Node,
-} from "@z-lang/types";
+} from "@x-lang/types";
 
 // Errors
 export {
-  ZLangError,
+  XLangError,
   LexerError,
   ParseError,
   ASTBuildError,
-} from "@z-lang/types";
+} from "@x-lang/types";
 
 // Low-level parser access
 export {
-  ZLangLexer,
-  ZLangParser,
+  XLangLexer,
+  XLangParser,
   createLexer,
   parse as parseCST,
   tokenize as tokenizeRaw,
   locationFromToken,
-} from "@z-lang/parser";
-export type { ParseResult, TokenInfo } from "@z-lang/parser";
+} from "@x-lang/parser";
+export type { ParseResult, TokenInfo } from "@x-lang/parser";

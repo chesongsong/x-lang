@@ -1,4 +1,4 @@
-export type RawSegmentType = "markdown" | "zlang" | "pending";
+export type RawSegmentType = "markdown" | "xlang" | "pending";
 
 export interface RawSegment {
   readonly type: RawSegmentType;
@@ -6,7 +6,7 @@ export interface RawSegment {
   readonly language?: string;
 }
 
-const ZLANG_LANGUAGES = new Set(["z-lang", "zlang", "z"]);
+const XLANG_LANGUAGES = new Set(["x-lang", "xlang", "x"]);
 
 export class SourceSplitter {
   split(source: string): RawSegment[] {
@@ -64,14 +64,14 @@ export class SourceSplitter {
       ? content.trim()
       : content.slice(firstNewline + 1);
 
-    const isZlang = ZLANG_LANGUAGES.has(langTag.toLowerCase());
+    const isXlang = XLANG_LANGUAGES.has(langTag.toLowerCase());
 
-    if (isPending && isZlang) {
+    if (isPending && isXlang) {
       return { type: "pending", language: langTag, content: codeContent };
     }
 
-    if (isZlang) {
-      return { type: "zlang", content: codeContent };
+    if (isXlang) {
+      return { type: "xlang", content: codeContent };
     }
 
     const fenceTag = langTag ? "```" + langTag : "```";

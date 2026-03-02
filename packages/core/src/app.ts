@@ -3,14 +3,16 @@ import type {
   ComponentRenderer,
   CodeBlockData,
   PendingData,
-} from "@z-lang/render";
-import { RenderEngine } from "@z-lang/render";
-import { run } from "./zlang.js";
+} from "@x-lang/render";
+import { RenderEngine } from "@x-lang/render";
+import type { ComponentInstance } from "@x-lang/render";
+import { run } from "./xlang.js";
 import type { ComponentDefinition } from "./define-component.js";
+import { EventBus } from "./event-bus.js";
+import type { EventHandler } from "./event-bus.js";
 
 // ---------------------------------------------------------------------------
-// Internal: Decorator over user-supplied base factory that auto-registers
-// component renderers added via app.use()
+// Internal: Decorator over user-supplied base factory
 // ---------------------------------------------------------------------------
 
 class AppComponentFactory implements ComponentFactory {
@@ -45,27 +47,19 @@ class AppComponentFactory implements ComponentFactory {
 // Public API
 // ---------------------------------------------------------------------------
 
-/**
- * Application facade that unifies component registration, execution,
- * and rendering into a single cohesive API.
- *
- * ```ts
- * const app = new ZLangApp(new ElementComponentFactory());
- * app.use(rtable);
- * app.use(button);
- * app.provide({ 用户列表: [...] });
- * app.run(source, outputContainer);
- * ```
- */
-export class ZLangApp {
+export class XLangApp {
   private readonly components: ComponentDefinition[] = [];
   private readonly factory: AppComponentFactory;
   private readonly engine: RenderEngine;
+  private readonly bus = new EventBus();
   private vars: Record<string, unknown> = {};
 
   constructor(baseFactory: ComponentFactory) {
     this.factory = new AppComponentFactory(baseFactory);
     this.engine = new RenderEngine(this.factory);
+    this.engine.setEventCallback((kind, event, payload) => {
+      this.bus.emit(EventBus.buildKey(kind, event), payload);
+    });
   }
 
   use(component: ComponentDefinition): this {
@@ -80,6 +74,28 @@ export class ZLangApp {
   provide(variables: Record<string, unknown>): this {
     Object.assign(this.vars, variables);
     return this;
+  }
+
+  on(component: string, event: string, handler: EventHandler): this {
+    this.bus.on(EventBus.buildKey(component, event), handler);
+    return this;
+  }
+
+  off(component: string, event: string, handler?: EventHandler): this {
+    this.bus.off(EventBus.buildKey(component, event), handler);
+    return this;
+  }
+
+  getInstances(kind?: string): readonly ComponentInstance[] {
+    return this.engine.getInstances(kind);
+  }
+
+  updateInstance(kind: string, index: number, data: unknown): void {
+    const instances = this.engine.getInstances(kind);
+    const target = instances.find((i) => i.index === index);
+    if (target?.handle.update) {
+      target.handle.update(data);
+    }
   }
 
   run(source: string, container: HTMLElement): void {

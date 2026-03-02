@@ -1,5 +1,5 @@
 {
-  "name": "@z-lang/playground",
+  "name": "@x-lang/playground",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^6.0.4",
-    "@z-lang/core": "*",
-    "@z-lang/render": "*",
+    "@x-lang/core": "*",
+    "@x-lang/render": "*",
     "element-plus": "^2.13.2",
     "monaco-editor": "^0.55.1",
     "vue": "^3.5.29"

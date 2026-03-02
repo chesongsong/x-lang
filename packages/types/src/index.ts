@@ -50,7 +50,7 @@ export type {
 } from "./ast.js";
 
 export {
-  ZLangError,
+  XLangError,
   LexerError,
   ParseError,
   ASTBuildError,

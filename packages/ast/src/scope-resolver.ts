@@ -14,7 +14,7 @@ import type {
   AssignmentExpression,
   Identifier,
   CallArgument,
-} from "@z-lang/types";
+} from "@x-lang/types";
 
 export class ScopeResolver {
   private scopeStack: Set<string>[] = [];

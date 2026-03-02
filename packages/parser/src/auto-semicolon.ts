@@ -5,28 +5,28 @@ import {
   type TokenFactory,
   type TokenSource,
 } from "antlr4ng";
-import { ZLangLexer } from "./generated/ZLangLexer.js";
+import { XLangLexer } from "./generated/XLangLexer.js";
 
 const STATEMENT_ENDING_TOKENS = new Set([
-  ZLangLexer.IDENTIFIER,
-  ZLangLexer.NUMBER,
-  ZLangLexer.STRING,
-  ZLangLexer.TRUE,
-  ZLangLexer.FALSE,
-  ZLangLexer.NULL,
-  ZLangLexer.RPAREN,
-  ZLangLexer.RBRACE,
-  ZLangLexer.RBRACKET,
-  ZLangLexer.BREAK,
-  ZLangLexer.CONTINUE,
-  ZLangLexer.RETURN,
+  XLangLexer.IDENTIFIER,
+  XLangLexer.NUMBER,
+  XLangLexer.STRING,
+  XLangLexer.TRUE,
+  XLangLexer.FALSE,
+  XLangLexer.NULL,
+  XLangLexer.RPAREN,
+  XLangLexer.RBRACE,
+  XLangLexer.RBRACKET,
+  XLangLexer.BREAK,
+  XLangLexer.CONTINUE,
+  XLangLexer.RETURN,
 ]);
 
 export class AutoSemicolonTokenSource implements TokenSource {
   private lastNonNewlineToken: Token | null = null;
   private pending: Token | null = null;
 
-  constructor(private readonly lexer: ZLangLexer) {}
+  constructor(private readonly lexer: XLangLexer) {}
 
   nextToken(): Token {
     if (this.pending) {
@@ -38,7 +38,7 @@ export class AutoSemicolonTokenSource implements TokenSource {
     while (true) {
       const token = this.lexer.nextToken();
 
-      if (token.type === ZLangLexer.EOF) {
+      if (token.type === XLangLexer.EOF) {
         if (
           this.lastNonNewlineToken &&
           STATEMENT_ENDING_TOKENS.has(this.lastNonNewlineToken.type)
@@ -50,7 +50,7 @@ export class AutoSemicolonTokenSource implements TokenSource {
         return token;
       }
 
-      if (token.type === ZLangLexer.NEWLINE) {
+      if (token.type === XLangLexer.NEWLINE) {
         if (
           this.lastNonNewlineToken &&
           STATEMENT_ENDING_TOKENS.has(this.lastNonNewlineToken.type)
@@ -66,7 +66,7 @@ export class AutoSemicolonTokenSource implements TokenSource {
   }
 
   private createSemiToken(positionToken: Token): Token {
-    const semi = CommonToken.fromType(ZLangLexer.SEMI, ";");
+    const semi = CommonToken.fromType(XLangLexer.SEMI, ";");
     semi.line = positionToken.line;
     semi.column = positionToken.column;
     semi.start = positionToken.start;

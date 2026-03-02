@@ -6,8 +6,8 @@ import {
   defineComponent,
   ZArray,
   ZObject,
-} from "@z-lang/core";
-import type { RenderableContext } from "@z-lang/core";
+} from "@x-lang/core";
+import type { RenderableContext } from "@x-lang/core";
 
 interface RenderTableColumn {
   readonly name: string;
@@ -74,30 +74,30 @@ function resolveColumns(
     }
 
     throw new Error(
-      "rtable column must be a field name or named argument (name = expression)",
+      "table column must be a field name or named argument (name = expression)",
     );
   });
 
   return { columns };
 }
 
-export const rtable = defineComponent<RenderTableData>("rtable", {
+export const table = defineComponent<RenderTableData>("table", {
   setup: {
     execute(ctx: RenderableContext): RenderTableData {
       if (ctx.args.length < 1) {
-        throw new Error("rtable requires at least 1 argument (data source)");
+        throw new Error("table requires at least 1 argument (data source)");
       }
 
       const firstArg = ctx.args[0]!;
       if (firstArg.type === "NamedArgument") {
         throw new Error(
-          "rtable first argument must be a data source, not a named argument",
+          "table first argument must be a data source, not a named argument",
         );
       }
 
       const recordsVal = ctx.evaluate(firstArg);
       if (!(recordsVal instanceof ZArray)) {
-        throw new Error("rtable first argument must be an array");
+        throw new Error("table first argument must be an array");
       }
 
       if (ctx.args.length === 1) {

@@ -1,9 +1,9 @@
-import type { ComponentRenderer, Disposable } from "@z-lang/render";
+import type { ComponentRenderer, Disposable } from "@x-lang/render";
 
 export class MarkdownRenderer implements ComponentRenderer<string> {
   render(content: string, container: HTMLElement): Disposable {
     const block = document.createElement("div");
-    block.className = "zlang-markdown";
+    block.className = "xlang-markdown";
 
     const lines = content.split("\n");
     let i = 0;

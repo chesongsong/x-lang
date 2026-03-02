@@ -1,4 +1,4 @@
-# z-lang
+# x-lang
 
 A JavaScript-like language built with ANTLR4 and TypeScript.
 
@@ -6,10 +6,10 @@ A JavaScript-like language built with ANTLR4 and TypeScript.
 
 ```
 packages/
-├── types/    @z-lang/types   — AST node types, error classes, common types
-├── parser/   @z-lang/parser  — ANTLR4 grammar, lexer, parser
-├── ast/      @z-lang/ast     — CST→AST builder, AST visitor
-└── core/     @z-lang/core    — Public API (parse, tokenize, re-exports everything)
+├── types/    @x-lang/types   — AST node types, error classes, common types
+├── parser/   @x-lang/parser  — ANTLR4 grammar, lexer, parser
+├── ast/      @x-lang/ast     — CST→AST builder, AST visitor
+└── core/     @x-lang/core    — Public API (parse, tokenize, re-exports everything)
 ```
 
 ## Quick Start
@@ -22,7 +22,7 @@ npm run build
 ## Usage
 
 ```typescript
-import { parse, tokenize } from "@z-lang/core";
+import { parse, tokenize } from "@x-lang/core";
 
 const { ast, errors } = parse(`
   fn add(a: number, b: number): number {
@@ -56,5 +56,5 @@ console.log(ast.body); // [FunctionDeclaration, VariableDeclaration]
 
 1. `antlr-ng` generates TypeScript lexer/parser from `.g4` grammars
 2. `tsc --build` compiles all packages via project references
-3. `esbuild` bundles `@z-lang/core` into ESM (`.mjs`) and CJS (`.cjs`)
+3. `esbuild` bundles `@x-lang/core` into ESM (`.mjs`) and CJS (`.cjs`)
 4. `tsc --emitDeclarationOnly` generates `.d.ts` declaration files

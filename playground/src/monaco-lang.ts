@@ -1,11 +1,11 @@
 import * as monaco from "monaco-editor";
 
-export const ZLANG_ID = "zlang";
+export const XLANG_ID = "xlang";
 
-export function registerZLang(): void {
-  monaco.languages.register({ id: ZLANG_ID });
+export function registerXLang(): void {
+  monaco.languages.register({ id: XLANG_ID });
 
-  monaco.languages.setMonarchTokensProvider(ZLANG_ID, {
+  monaco.languages.setMonarchTokensProvider(XLANG_ID, {
     keywords: [
       "fn",
       "return",
@@ -50,11 +50,11 @@ export function registerZLang(): void {
 
     tokenizer: {
       root: [
-        [/```/, { token: "keyword.fence", next: "@zlangBlock" }],
+        [/```/, { token: "keyword.fence", next: "@xlangBlock" }],
         [/.*/, "comment.content"],
       ],
 
-      zlangBlock: [
+      xlangBlock: [
         [/```/, { token: "keyword.fence", next: "@pop" }],
         [/\/\/.*$/, "comment"],
         [/\/\*/, "comment", "@blockComment"],
@@ -99,7 +99,7 @@ export function registerZLang(): void {
     },
   });
 
-  monaco.languages.setLanguageConfiguration(ZLANG_ID, {
+  monaco.languages.setLanguageConfiguration(XLANG_ID, {
     comments: {
       lineComment: "//",
       blockComment: ["/*", "*/"],
@@ -131,8 +131,8 @@ export function registerZLang(): void {
   });
 }
 
-export function createZLangTheme(): void {
-  monaco.editor.defineTheme("zlang-light", {
+export function createXLangTheme(): void {
+  monaco.editor.defineTheme("xlang-light", {
     base: "vs",
     inherit: true,
     rules: [

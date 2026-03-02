@@ -1,9 +1,9 @@
-import type { ComponentRenderer, Disposable, CodeBlockData } from "@z-lang/render";
+import type { ComponentRenderer, Disposable, CodeBlockData } from "@x-lang/render";
 
 export class CodeBlockRenderer implements ComponentRenderer<CodeBlockData> {
   render(data: CodeBlockData, container: HTMLElement): Disposable {
     const wrapper = document.createElement("div");
-    wrapper.className = "zlang-codeblock";
+    wrapper.className = "xlang-codeblock";
 
     const header = document.createElement("div");
     header.className = "codeblock-header";

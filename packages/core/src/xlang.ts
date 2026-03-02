@@ -1,13 +1,13 @@
 import {
   parse as parseCST,
   tokenize as lexTokenize,
-} from "@z-lang/parser";
-import type { TokenInfo } from "@z-lang/parser";
-import { ASTBuilder, ScopeResolver } from "@z-lang/ast";
-import { execute } from "@z-lang/interpreter";
-import type { OutputSegment, ExecuteOptions, BuiltinFunction } from "@z-lang/interpreter";
-import type { Program } from "@z-lang/types";
-import { ParseError } from "@z-lang/types";
+} from "@x-lang/parser";
+import type { TokenInfo } from "@x-lang/parser";
+import { ASTBuilder, ScopeResolver } from "@x-lang/ast";
+import { execute } from "@x-lang/interpreter";
+import type { OutputSegment, ExecuteOptions, BuiltinFunction } from "@x-lang/interpreter";
+import type { Program } from "@x-lang/types";
+import { ParseError } from "@x-lang/types";
 import { SourceSplitter } from "./splitter.js";
 import type { RenderableDefinition } from "./define-renderable.js";
 
@@ -78,7 +78,7 @@ export function run(source: string, options?: RunOptions): RunOutput {
     if (seg.type === "pending") {
       outputSegments.push({
         type: "pending",
-        language: seg.language ?? "z-lang",
+        language: seg.language ?? "x-lang",
         content: seg.content,
       });
       continue;

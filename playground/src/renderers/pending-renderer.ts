@@ -1,9 +1,9 @@
-import type { ComponentRenderer, Disposable, PendingData } from "@z-lang/render";
+import type { ComponentRenderer, Disposable, PendingData } from "@x-lang/render";
 
 export class PendingRenderer implements ComponentRenderer<PendingData> {
   render(data: PendingData, container: HTMLElement): Disposable {
     const wrapper = document.createElement("div");
-    wrapper.className = "zlang-pending";
+    wrapper.className = "xlang-pending";
 
     const header = document.createElement("div");
     header.className = "pending-header";

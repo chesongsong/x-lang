@@ -1,4 +1,8 @@
-import type { Disposable, ComponentRenderer } from "@z-lang/render";
+import type {
+  ComponentHandle,
+  ComponentRenderer,
+  RenderContext,
+} from "@x-lang/render";
 import { defineRenderable } from "./define-renderable.js";
 import type {
   RenderableDefinition,
@@ -25,7 +29,8 @@ export interface AdvancedSetup<T = unknown> {
 export type RenderFn<T = unknown> = (
   data: T,
   container: HTMLElement,
-) => Disposable;
+  ctx: RenderContext,
+) => ComponentHandle<T>;
 
 export interface ComponentDefinition<T = unknown> {
   readonly name: string;
@@ -61,31 +66,6 @@ function isAdvancedSetup<T>(
   return typeof setup === "object" && setup !== null && "execute" in setup;
 }
 
-/**
- * Define a self-contained component — combines data processing (setup)
- * and UI rendering (render) into a single definition.
- *
- * Simple mode:
- * ```ts
- * defineComponent("tlink", {
- *   setup: (args) => ({ text: args[0], url: args[1] }),
- *   render(data, el) {
- *     const a = document.createElement("a");
- *     a.href = data.url; a.textContent = data.text;
- *     el.appendChild(a);
- *     return { dispose: () => a.remove() };
- *   },
- * });
- * ```
- *
- * Advanced mode (lazy evaluation, custom scoping):
- * ```ts
- * defineComponent("rtable", {
- *   setup: { execute(ctx) { return tableData; } },
- *   render(data, el) { ... },
- * });
- * ```
- */
 export function defineComponent<T>(
   name: string,
   options: ComponentOptions<T>,
@@ -101,6 +81,9 @@ export function defineComponent<T>(
   return {
     name,
     renderable,
-    createRenderer: () => ({ render: renderFn }),
+    createRenderer: () => ({
+      render: (value: T, container: HTMLElement, ctx?: RenderContext) =>
+        renderFn(value, container, ctx ?? { emit: () => {} }),
+    }),
   };
 }

@@ -1,4 +1,4 @@
-lexer grammar ZLangLexer;
+lexer grammar XLangLexer;
 
 // -------------------------------------------------------------------------
 // Scope delimiter

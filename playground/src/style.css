@@ -152,7 +152,7 @@ html, body {
   margin-bottom: 16px;
 }
 
-.zlang-table {
+.xlang-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
@@ -161,7 +161,7 @@ html, body {
   overflow: hidden;
 }
 
-.zlang-table th {
+.xlang-table th {
   text-align: left;
   font-size: 13px;
   font-weight: 600;
@@ -171,7 +171,7 @@ html, body {
   border-bottom: 2px solid var(--border);
 }
 
-.zlang-table td {
+.xlang-table td {
   padding: 6px 14px;
   border-bottom: 1px solid var(--border);
   font-family: var(--font-mono);
@@ -179,18 +179,18 @@ html, body {
   color: var(--text);
 }
 
-.zlang-table tbody tr:hover td {
+.xlang-table tbody tr:hover td {
   background: #f6f8fa;
 }
 
-.zlang-table-index {
+.xlang-table-index {
   width: 40px;
   text-align: center;
   color: var(--text-muted);
   font-size: 12px;
 }
 
-.zlang-table tbody tr:last-child td {
+.xlang-table tbody tr:last-child td {
   border-bottom: none;
 }
 
@@ -199,7 +199,7 @@ html, body {
   margin-bottom: 12px;
 }
 
-.zlang-markdown {
+.xlang-markdown {
   line-height: 1.6;
 }
 
@@ -285,7 +285,7 @@ html, body {
   margin-bottom: 12px;
 }
 
-.render-scope .zlang-markdown .md-p {
+.render-scope .xlang-markdown .md-p {
   font-family: var(--font-mono);
   color: var(--green);
   background: #f0fff4;
@@ -299,7 +299,7 @@ html, body {
   margin-bottom: 16px;
 }
 
-.zlang-pending {
+.xlang-pending {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
@@ -359,8 +359,18 @@ html, body {
   100% { background-position: -200% 0; }
 }
 
+/* Event status bar */
+#event-status:not(:empty) {
+  padding: 8px 16px;
+  background: #ecf5ff;
+  border-bottom: 1px solid #d9ecff;
+  color: #409eff;
+  font-size: 13px;
+  font-weight: 500;
+}
+
 /* Custom renderable: tlink */
-.zlang-tlink {
+.xlang-tlink {
   display: inline-block;
   color: #409eff;
   text-decoration: underline;
@@ -371,7 +381,7 @@ html, body {
   transition: color 0.2s;
 }
 
-.zlang-tlink:hover {
+.xlang-tlink:hover {
   color: #66b1ff;
 }
 

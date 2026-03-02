@@ -1,8 +1,8 @@
-import type { Expression, CallArgument } from "@z-lang/types";
-import type { BuiltinFunction, Evaluator } from "@z-lang/interpreter";
-import { ZRenderCustom } from "@z-lang/interpreter";
-import type { ZValue } from "@z-lang/interpreter";
-import { Environment, box } from "@z-lang/interpreter";
+import type { Expression, CallArgument } from "@x-lang/types";
+import type { BuiltinFunction, Evaluator } from "@x-lang/interpreter";
+import { ZRenderCustom } from "@x-lang/interpreter";
+import type { ZValue } from "@x-lang/interpreter";
+import { Environment, box } from "@x-lang/interpreter";
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -124,7 +124,7 @@ class AdvancedRenderableBuiltin implements BuiltinFunction {
  *
  * Advanced mode — handler receives a context with full evaluator access:
  * ```ts
- * defineRenderable("rtable", {
+ * defineRenderable("table", {
  *   execute(ctx) {
  *     const data = ctx.evaluate(ctx.args[0]!);
  *     // lazy evaluation, custom env, etc.

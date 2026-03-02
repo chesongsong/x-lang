@@ -1,6 +1,6 @@
 import type { SourceLocation } from "./common.js";
 
-export class ZLangError extends Error {
+export class XLangError extends Error {
   constructor(
     message: string,
     public readonly code: string,
@@ -12,7 +12,7 @@ export class ZLangError extends Error {
   }
 }
 
-export class LexerError extends ZLangError {
+export class LexerError extends XLangError {
   constructor(
     message: string,
     loc?: SourceLocation,
@@ -22,7 +22,7 @@ export class LexerError extends ZLangError {
   }
 }
 
-export class ParseError extends ZLangError {
+export class ParseError extends XLangError {
   constructor(
     message: string,
     loc?: SourceLocation,
@@ -32,7 +32,7 @@ export class ParseError extends ZLangError {
   }
 }
 
-export class ASTBuildError extends ZLangError {
+export class ASTBuildError extends XLangError {
   constructor(
     message: string,
     loc?: SourceLocation,

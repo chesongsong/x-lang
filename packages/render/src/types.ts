@@ -2,8 +2,26 @@ export interface Disposable {
   dispose(): void;
 }
 
+export interface ComponentHandle<T = unknown> extends Disposable {
+  update?(data: T): void;
+}
+
+export interface RenderContext {
+  emit(event: string, payload?: unknown): void;
+}
+
+export type EventCallback = (
+  componentKind: string,
+  event: string,
+  payload: unknown,
+) => void;
+
 export interface ComponentRenderer<T = unknown> {
-  render(value: T, container: HTMLElement): Disposable;
+  render(
+    value: T,
+    container: HTMLElement,
+    ctx?: RenderContext,
+  ): Disposable | ComponentHandle<T>;
 }
 
 export interface CodeBlockData {

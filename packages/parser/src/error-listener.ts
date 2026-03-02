@@ -4,9 +4,9 @@ import {
   type Recognizer,
   type ATNSimulator,
 } from "antlr4ng";
-import { ParseError } from "@z-lang/types";
+import { ParseError } from "@x-lang/types";
 
-export class ZLangErrorListener implements ANTLRErrorListener {
+export class XLangErrorListener implements ANTLRErrorListener {
   public readonly errors: ParseError[] = [];
 
   syntaxError(

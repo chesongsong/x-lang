@@ -1,7 +1,7 @@
 {
-  "name": "@z-lang/core",
+  "name": "@x-lang/core",
   "version": "0.1.0",
-  "description": "Core package for z-lang — parse, tokenize, and work with z-lang AST",
+  "description": "Core package for x-lang — parse, tokenize, and work with x-lang AST",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -16,11 +16,11 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@z-lang/types": "*",
-    "@z-lang/parser": "*",
-    "@z-lang/ast": "*",
-    "@z-lang/interpreter": "*",
-    "@z-lang/render": "*",
+    "@x-lang/types": "*",
+    "@x-lang/parser": "*",
+    "@x-lang/ast": "*",
+    "@x-lang/interpreter": "*",
+    "@x-lang/render": "*",
     "antlr4ng": "^3.0.16"
   }
 }

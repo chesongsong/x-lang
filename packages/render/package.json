@@ -1,5 +1,5 @@
 {
-  "name": "@z-lang/render",
+  "name": "@x-lang/render",
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -14,7 +14,7 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@z-lang/interpreter": "*"
+    "@x-lang/interpreter": "*"
   },
   "devDependencies": {
     "typescript": "^5.7.0"

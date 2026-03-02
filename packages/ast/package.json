@@ -1,7 +1,7 @@
 {
-  "name": "@z-lang/ast",
+  "name": "@x-lang/ast",
   "version": "0.1.0",
-  "description": "AST builder and visitor for z-lang",
+  "description": "AST builder and visitor for x-lang",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -10,8 +10,8 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@z-lang/types": "*",
-    "@z-lang/parser": "*",
+    "@x-lang/types": "*",
+    "@x-lang/parser": "*",
     "antlr4ng": "^3.0.16"
   }
 }

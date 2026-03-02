@@ -1,6 +1,6 @@
-parser grammar ZLangParser;
+parser grammar XLangParser;
 
-options { tokenVocab = ZLangLexer; }
+options { tokenVocab = XLangLexer; }
 
 // =========================================================================
 // Program — one or more scope blocks

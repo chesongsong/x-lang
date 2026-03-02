@@ -1,4 +1,4 @@
-import type { Expression, CallArgument } from "@z-lang/types";
+import type { Expression, CallArgument } from "@x-lang/types";
 import type { ZValue } from "../values/base.js";
 import type { Environment } from "../environment.js";
 

@@ -3,17 +3,17 @@ import {
   CommonTokenStream,
   type Token,
 } from "antlr4ng";
-import { ZLangLexer } from "./generated/ZLangLexer.js";
-import { ZLangParser } from "./generated/ZLangParser.js";
-import type { ProgramContext } from "./generated/ZLangParser.js";
-import { LexerError, ParseError } from "@z-lang/types";
-import type { SourceLocation } from "@z-lang/types";
-import { ZLangErrorListener } from "./error-listener.js";
+import { XLangLexer } from "./generated/XLangLexer.js";
+import { XLangParser } from "./generated/XLangParser.js";
+import type { ProgramContext } from "./generated/XLangParser.js";
+import { LexerError, ParseError } from "@x-lang/types";
+import type { SourceLocation } from "@x-lang/types";
+import { XLangErrorListener } from "./error-listener.js";
 import { AutoSemicolonTokenSource } from "./auto-semicolon.js";
 
-export { ZLangLexer } from "./generated/ZLangLexer.js";
-export { ZLangParser } from "./generated/ZLangParser.js";
-export type { ProgramContext } from "./generated/ZLangParser.js";
+export { XLangLexer } from "./generated/XLangLexer.js";
+export { XLangParser } from "./generated/XLangParser.js";
+export type { ProgramContext } from "./generated/XLangParser.js";
 export { AutoSemicolonTokenSource } from "./auto-semicolon.js";
 
 export interface ParseResult {
@@ -30,14 +30,14 @@ export interface TokenInfo {
   readonly channel: number;
 }
 
-export function createLexer(source: string): ZLangLexer {
+export function createLexer(source: string): XLangLexer {
   const chars = CharStream.fromString(source);
-  return new ZLangLexer(chars);
+  return new XLangLexer(chars);
 }
 
 export function tokenize(source: string): readonly TokenInfo[] {
   const lexer = createLexer(source);
-  const errorListener = new ZLangErrorListener();
+  const errorListener = new XLangErrorListener();
   lexer.removeErrorListeners();
   lexer.addErrorListener(errorListener);
 
@@ -53,7 +53,7 @@ export function tokenize(source: string): readonly TokenInfo[] {
 
   const tokens: TokenInfo[] = [];
   for (const token of stream.getTokens()) {
-    if (token.type === ZLangLexer.EOF) break;
+    if (token.type === XLangLexer.EOF) break;
     tokens.push({
       type: token.type,
       text: token.text ?? "",
@@ -67,15 +67,15 @@ export function tokenize(source: string): readonly TokenInfo[] {
 
 export function parse(source: string): ParseResult {
   const lexer = createLexer(source);
-  const lexerErrorListener = new ZLangErrorListener();
+  const lexerErrorListener = new XLangErrorListener();
   lexer.removeErrorListeners();
   lexer.addErrorListener(lexerErrorListener);
 
   const asi = new AutoSemicolonTokenSource(lexer);
   const tokens = new CommonTokenStream(asi);
-  const parser = new ZLangParser(tokens);
+  const parser = new XLangParser(tokens);
 
-  const parserErrorListener = new ZLangErrorListener();
+  const parserErrorListener = new XLangErrorListener();
   parser.removeErrorListeners();
   parser.addErrorListener(parserErrorListener);
 

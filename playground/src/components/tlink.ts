@@ -1,4 +1,4 @@
-import { defineComponent } from "@z-lang/core";
+import { defineComponent } from "@x-lang/core";
 
 interface TlinkData {
   readonly text: string;
@@ -17,7 +17,7 @@ export const tlink = defineComponent<TlinkData>("tlink", {
     link.textContent = data.text;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    link.className = "zlang-tlink";
+    link.className = "xlang-tlink";
     container.appendChild(link);
 
     return { dispose: () => link.remove() };

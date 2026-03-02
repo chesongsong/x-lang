@@ -1,5 +1,5 @@
 import { ParserRuleContext, type Token } from "antlr4ng";
-import { ZLangParser } from "@z-lang/parser";
+import { XLangParser } from "@x-lang/parser";
 import type {
   Program,
   ScopeBlock,
@@ -29,8 +29,8 @@ import type {
   TypeAnnotationNode,
   NamedArgument,
   CallArgument,
-} from "@z-lang/types";
-import { ASTBuildError } from "@z-lang/types";
+} from "@x-lang/types";
+import { ASTBuildError } from "@x-lang/types";
 
 function loc(ctx: ParserRuleContext): SourceLocation {
   const start = ctx.start!;
@@ -70,7 +70,7 @@ export class ASTBuilder {
     for (const child of ctx.children ?? []) {
       if (
         child instanceof ParserRuleContext &&
-        child.ruleIndex === ZLangParser.RULE_scopeBlock
+        child.ruleIndex === XLangParser.RULE_scopeBlock
       ) {
         scopes.push(this.buildScopeBlock(child));
       }
@@ -100,37 +100,37 @@ export class ASTBuilder {
   private buildStatement(ctx: ParserRuleContext): Statement | null {
     const ruleIndex = ctx.ruleIndex;
 
-    if (ruleIndex === ZLangParser.RULE_functionDeclaration) {
+    if (ruleIndex === XLangParser.RULE_functionDeclaration) {
       return this.buildFunctionDeclaration(ctx);
     }
-    if (ruleIndex === ZLangParser.RULE_ifStatement) {
+    if (ruleIndex === XLangParser.RULE_ifStatement) {
       return this.buildIfStatement(ctx);
     }
-    if (ruleIndex === ZLangParser.RULE_whileStatement) {
+    if (ruleIndex === XLangParser.RULE_whileStatement) {
       return this.buildWhileStatement(ctx);
     }
-    if (ruleIndex === ZLangParser.RULE_forStatement) {
+    if (ruleIndex === XLangParser.RULE_forStatement) {
       return this.buildForStatement(ctx);
     }
-    if (ruleIndex === ZLangParser.RULE_returnStatement) {
+    if (ruleIndex === XLangParser.RULE_returnStatement) {
       return this.buildReturnStatement(ctx);
     }
-    if (ruleIndex === ZLangParser.RULE_expressionStatement) {
+    if (ruleIndex === XLangParser.RULE_expressionStatement) {
       return this.buildExpressionStatement(ctx);
     }
-    if (ruleIndex === ZLangParser.RULE_block) {
+    if (ruleIndex === XLangParser.RULE_block) {
       return this.buildBlock(ctx);
     }
-    if (ruleIndex === ZLangParser.RULE_statement) {
+    if (ruleIndex === XLangParser.RULE_statement) {
       const child = ctx.getChild(0);
       if (child instanceof ParserRuleContext) {
         return this.buildStatement(child);
       }
     }
-    if (ruleIndex === ZLangParser.RULE_breakStatement) {
+    if (ruleIndex === XLangParser.RULE_breakStatement) {
       return { type: "BreakStatement", loc: loc(ctx) };
     }
-    if (ruleIndex === ZLangParser.RULE_continueStatement) {
+    if (ruleIndex === XLangParser.RULE_continueStatement) {
       return { type: "ContinueStatement", loc: loc(ctx) };
     }
 
@@ -138,13 +138,13 @@ export class ASTBuilder {
   }
 
   private buildFunctionDeclaration(ctx: ParserRuleContext): FunctionDeclaration {
-    const nameToken = ctx.getToken(ZLangParser.IDENTIFIER, 0);
+    const nameToken = ctx.getToken(XLangParser.IDENTIFIER, 0);
     const name = nameToken?.getText() ?? "";
 
-    const paramListCtx = this.findRuleChild(ctx, ZLangParser.RULE_parameterList);
+    const paramListCtx = this.findRuleChild(ctx, XLangParser.RULE_parameterList);
     const params = paramListCtx ? this.buildParameterList(paramListCtx) : [];
 
-    const blockCtx = this.findRuleChild(ctx, ZLangParser.RULE_block)!;
+    const blockCtx = this.findRuleChild(ctx, XLangParser.RULE_block)!;
 
     return {
       type: "FunctionDeclaration",
@@ -156,9 +156,9 @@ export class ASTBuilder {
   }
 
   private buildIfStatement(ctx: ParserRuleContext): IfStatement {
-    const exprCtx = this.findRuleChild(ctx, ZLangParser.RULE_expression)!;
-    const blocks = this.findAllRuleChildren(ctx, ZLangParser.RULE_block);
-    const nestedIf = this.findRuleChild(ctx, ZLangParser.RULE_ifStatement);
+    const exprCtx = this.findRuleChild(ctx, XLangParser.RULE_expression)!;
+    const blocks = this.findAllRuleChildren(ctx, XLangParser.RULE_block);
+    const nestedIf = this.findRuleChild(ctx, XLangParser.RULE_ifStatement);
 
     let alternate: BlockStatement | IfStatement | undefined;
     if (nestedIf) {
@@ -177,8 +177,8 @@ export class ASTBuilder {
   }
 
   private buildWhileStatement(ctx: ParserRuleContext): WhileStatement {
-    const exprCtx = this.findRuleChild(ctx, ZLangParser.RULE_expression)!;
-    const blockCtx = this.findRuleChild(ctx, ZLangParser.RULE_block)!;
+    const exprCtx = this.findRuleChild(ctx, XLangParser.RULE_expression)!;
+    const blockCtx = this.findRuleChild(ctx, XLangParser.RULE_block)!;
 
     return {
       type: "WhileStatement",
@@ -189,8 +189,8 @@ export class ASTBuilder {
   }
 
   private buildForStatement(ctx: ParserRuleContext): ForStatement {
-    const expressions = this.findAllRuleChildren(ctx, ZLangParser.RULE_expression);
-    const blockCtx = this.findRuleChild(ctx, ZLangParser.RULE_block)!;
+    const expressions = this.findAllRuleChildren(ctx, XLangParser.RULE_expression);
+    const blockCtx = this.findRuleChild(ctx, XLangParser.RULE_block)!;
 
     return {
       type: "ForStatement",
@@ -209,7 +209,7 @@ export class ASTBuilder {
   }
 
   private buildReturnStatement(ctx: ParserRuleContext): ReturnStatement {
-    const exprCtx = this.findRuleChild(ctx, ZLangParser.RULE_expression);
+    const exprCtx = this.findRuleChild(ctx, XLangParser.RULE_expression);
     return {
       type: "ReturnStatement",
       argument: exprCtx ? this.buildExpression(exprCtx) : undefined,
@@ -218,7 +218,7 @@ export class ASTBuilder {
   }
 
   private buildExpressionStatement(ctx: ParserRuleContext): ExpressionStatement {
-    const exprCtx = this.findRuleChild(ctx, ZLangParser.RULE_expression)!;
+    const exprCtx = this.findRuleChild(ctx, XLangParser.RULE_expression)!;
     return {
       type: "ExpressionStatement",
       expression: this.buildExpression(exprCtx),
@@ -248,49 +248,49 @@ export class ASTBuilder {
   buildExpression(ctx: ParserRuleContext): Expression {
     const ruleIndex = ctx.ruleIndex;
 
-    if (ruleIndex === ZLangParser.RULE_expression) {
+    if (ruleIndex === XLangParser.RULE_expression) {
       const child = ctx.getChild(0);
       if (child instanceof ParserRuleContext) {
         return this.buildExpression(child);
       }
     }
 
-    if (ruleIndex === ZLangParser.RULE_assignmentExpression) {
+    if (ruleIndex === XLangParser.RULE_assignmentExpression) {
       return this.buildAssignmentExpression(ctx);
     }
 
     if (
-      ruleIndex === ZLangParser.RULE_logicalOrExpression ||
-      ruleIndex === ZLangParser.RULE_logicalAndExpression ||
-      ruleIndex === ZLangParser.RULE_equalityExpression ||
-      ruleIndex === ZLangParser.RULE_relationalExpression ||
-      ruleIndex === ZLangParser.RULE_additiveExpression ||
-      ruleIndex === ZLangParser.RULE_multiplicativeExpression
+      ruleIndex === XLangParser.RULE_logicalOrExpression ||
+      ruleIndex === XLangParser.RULE_logicalAndExpression ||
+      ruleIndex === XLangParser.RULE_equalityExpression ||
+      ruleIndex === XLangParser.RULE_relationalExpression ||
+      ruleIndex === XLangParser.RULE_additiveExpression ||
+      ruleIndex === XLangParser.RULE_multiplicativeExpression
     ) {
       return this.buildBinaryChain(ctx);
     }
 
-    if (ruleIndex === ZLangParser.RULE_unaryExpression) {
+    if (ruleIndex === XLangParser.RULE_unaryExpression) {
       return this.buildUnaryExpression(ctx);
     }
 
-    if (ruleIndex === ZLangParser.RULE_postfixExpression) {
+    if (ruleIndex === XLangParser.RULE_postfixExpression) {
       return this.buildPostfixExpression(ctx);
     }
 
-    if (ruleIndex === ZLangParser.RULE_primaryExpression) {
+    if (ruleIndex === XLangParser.RULE_primaryExpression) {
       return this.buildPrimaryExpression(ctx);
     }
 
-    if (ruleIndex === ZLangParser.RULE_arrayLiteral) {
+    if (ruleIndex === XLangParser.RULE_arrayLiteral) {
       return this.buildArrayLiteral(ctx);
     }
 
-    if (ruleIndex === ZLangParser.RULE_objectLiteral) {
+    if (ruleIndex === XLangParser.RULE_objectLiteral) {
       return this.buildObjectLiteral(ctx);
     }
 
-    if (ruleIndex === ZLangParser.RULE_arrowFunction) {
+    if (ruleIndex === XLangParser.RULE_arrowFunction) {
       return this.buildArrowFunction(ctx);
     }
 
@@ -418,7 +418,7 @@ export class ASTBuilder {
     for (let i = 1; i < children.length; i++) {
       const child = children[i];
       if (child instanceof ParserRuleContext &&
-          child.ruleIndex === ZLangParser.RULE_postfixOp) {
+          child.ruleIndex === XLangParser.RULE_postfixOp) {
         result = this.applyPostfixOp(result, child);
       }
     }
@@ -459,10 +459,10 @@ export class ASTBuilder {
       const args: CallArgument[] = [];
       const argListCtx = children[1];
       if (argListCtx instanceof ParserRuleContext &&
-          argListCtx.ruleIndex === ZLangParser.RULE_argumentList) {
+          argListCtx.ruleIndex === XLangParser.RULE_argumentList) {
         for (const child of argListCtx.children ?? []) {
           if (child instanceof ParserRuleContext &&
-              child.ruleIndex === ZLangParser.RULE_argument) {
+              child.ruleIndex === XLangParser.RULE_argument) {
             args.push(this.buildArgument(child));
           }
         }
@@ -493,7 +493,7 @@ export class ASTBuilder {
     const text = first.getText();
     const token = ctx.start!;
 
-    if (ctx.getToken(ZLangParser.NUMBER, 0)) {
+    if (ctx.getToken(XLangParser.NUMBER, 0)) {
       return {
         type: "NumberLiteral",
         value: Number(text),
@@ -502,7 +502,7 @@ export class ASTBuilder {
       } as NumberLiteral;
     }
 
-    if (ctx.getToken(ZLangParser.STRING, 0)) {
+    if (ctx.getToken(XLangParser.STRING, 0)) {
       return {
         type: "StringLiteral",
         value: text.slice(1, -1),
@@ -511,19 +511,19 @@ export class ASTBuilder {
       } as StringLiteral;
     }
 
-    if (ctx.getToken(ZLangParser.TRUE, 0)) {
+    if (ctx.getToken(XLangParser.TRUE, 0)) {
       return { type: "BooleanLiteral", value: true, loc: tokenLoc(token) } as BooleanLiteral;
     }
 
-    if (ctx.getToken(ZLangParser.FALSE, 0)) {
+    if (ctx.getToken(XLangParser.FALSE, 0)) {
       return { type: "BooleanLiteral", value: false, loc: tokenLoc(token) } as BooleanLiteral;
     }
 
-    if (ctx.getToken(ZLangParser.NULL, 0)) {
+    if (ctx.getToken(XLangParser.NULL, 0)) {
       return { type: "NullLiteral", loc: tokenLoc(token) } as NullLiteral;
     }
 
-    if (ctx.getToken(ZLangParser.IDENTIFIER, 0)) {
+    if (ctx.getToken(XLangParser.IDENTIFIER, 0)) {
       return { type: "Identifier", name: text, loc: tokenLoc(token) } as Identifier;
     }
 
@@ -549,11 +549,11 @@ export class ASTBuilder {
 
   private buildObjectLiteral(ctx: ParserRuleContext): Expression {
     const properties: Property[] = [];
-    const propContexts = this.findAllRuleChildren(ctx, ZLangParser.RULE_property);
+    const propContexts = this.findAllRuleChildren(ctx, XLangParser.RULE_property);
 
     for (const propCtx of propContexts) {
-      const keyCtx = this.findRuleChild(propCtx, ZLangParser.RULE_propertyKey);
-      const exprCtx = this.findRuleChild(propCtx, ZLangParser.RULE_expression);
+      const keyCtx = this.findRuleChild(propCtx, XLangParser.RULE_propertyKey);
+      const exprCtx = this.findRuleChild(propCtx, XLangParser.RULE_expression);
 
       let key = keyCtx?.getText() ?? "";
       if (key.startsWith('"') || key.startsWith("'")) {
@@ -573,11 +573,11 @@ export class ASTBuilder {
   }
 
   private buildArrowFunction(ctx: ParserRuleContext): Expression {
-    const paramListCtx = this.findRuleChild(ctx, ZLangParser.RULE_parameterList);
+    const paramListCtx = this.findRuleChild(ctx, XLangParser.RULE_parameterList);
     const params = paramListCtx ? this.buildParameterList(paramListCtx) : [];
 
-    const blockCtx = this.findRuleChild(ctx, ZLangParser.RULE_block);
-    const exprCtx = this.findRuleChild(ctx, ZLangParser.RULE_expression);
+    const blockCtx = this.findRuleChild(ctx, XLangParser.RULE_block);
+    const exprCtx = this.findRuleChild(ctx, XLangParser.RULE_expression);
 
     const body: Expression | BlockStatement = blockCtx
       ? this.buildBlock(blockCtx)
@@ -644,11 +644,11 @@ export class ASTBuilder {
 
   private buildParameterList(ctx: ParserRuleContext): Parameter[] {
     const params: Parameter[] = [];
-    const paramContexts = this.findAllRuleChildren(ctx, ZLangParser.RULE_parameter);
+    const paramContexts = this.findAllRuleChildren(ctx, XLangParser.RULE_parameter);
 
     for (const paramCtx of paramContexts) {
-      const nameToken = paramCtx.getToken(ZLangParser.IDENTIFIER, 0);
-      const typeAnno = this.findRuleChild(paramCtx, ZLangParser.RULE_typeAnnotation);
+      const nameToken = paramCtx.getToken(XLangParser.IDENTIFIER, 0);
+      const typeAnno = this.findRuleChild(paramCtx, XLangParser.RULE_typeAnnotation);
       params.push({
         name: nameToken?.getText() ?? "",
         typeAnnotation: typeAnno ? this.buildTypeAnnotation(typeAnno) : undefined,
@@ -659,10 +659,10 @@ export class ASTBuilder {
   }
 
   private buildTypeAnnotation(ctx: ParserRuleContext): TypeAnnotationNode {
-    const baseCtx = this.findRuleChild(ctx, ZLangParser.RULE_baseType);
+    const baseCtx = this.findRuleChild(ctx, XLangParser.RULE_baseType);
     const text = baseCtx?.getText() ?? ctx.getText();
 
-    const hasBrackets = ctx.getToken(ZLangParser.LBRACKET, 0) !== null;
+    const hasBrackets = ctx.getToken(XLangParser.LBRACKET, 0) !== null;
 
     let baseType: TypeAnnotationNode;
     switch (text) {

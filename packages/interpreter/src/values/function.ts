@@ -1,4 +1,4 @@
-import type { BlockStatement, Expression } from "@z-lang/types";
+import type { BlockStatement, Expression } from "@x-lang/types";
 import { ZValue } from "./base.js";
 import type { Environment } from "../environment.js";
 

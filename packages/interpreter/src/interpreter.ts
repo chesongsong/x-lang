@@ -20,7 +20,7 @@ import type {
   ArrayExpression,
   ObjectExpression,
   ArrowFunctionExpression,
-} from "@z-lang/types";
+} from "@x-lang/types";
 import { Environment } from "./environment.js";
 import { ZValue } from "./values/base.js";
 import { ZNumber } from "./values/number.js";

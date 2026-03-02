@@ -1,17 +1,17 @@
 {
-  "name": "@z-lang/parser",
+  "name": "@x-lang/parser",
   "version": "0.1.0",
-  "description": "ANTLR4-based lexer and parser for z-lang",
+  "description": "ANTLR4-based lexer and parser for x-lang",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": ["dist"],
   "scripts": {
-    "generate": "antlr-ng -Dlanguage=TypeScript -v -o src/generated --exact-output-dir grammar/ZLangLexer.g4 grammar/ZLangParser.g4",
+    "generate": "antlr-ng -Dlanguage=TypeScript -v -o src/generated --exact-output-dir grammar/XLangLexer.g4 grammar/XLangParser.g4",
     "build": "tsc --build"
   },
   "dependencies": {
-    "@z-lang/types": "*",
+    "@x-lang/types": "*",
     "antlr4ng": "^3.0.16"
   }
 }

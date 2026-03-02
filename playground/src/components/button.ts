@@ -1,7 +1,7 @@
 import { createApp, defineComponent as vueDefineComponent, h } from "vue";
 import { ElButton } from "element-plus";
 import "element-plus/es/components/button/style/css";
-import { defineComponent } from "@z-lang/core";
+import { defineComponent } from "@x-lang/core";
 
 interface ButtonData {
   readonly text: string;

@@ -1,7 +1,7 @@
 {
-  "name": "@z-lang/types",
+  "name": "@x-lang/types",
   "version": "0.1.0",
-  "description": "TypeScript type definitions for z-lang AST, tokens, and errors",
+  "description": "TypeScript type definitions for x-lang AST, tokens, and errors",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
