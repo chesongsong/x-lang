@@ -27,8 +27,8 @@ const sharedData = {
     { 姓名: "王五", 部门: "产品部", 薪资: 28000 },
     { 姓名: "赵六", 部门: "工程部", 薪资: 30000 },
   ],
-  公司名: "X-Lang 科技",
-  公司信息: { 名称: "X-Lang 科技", 行业: "软件开发", 成立年份: 2024, 地址: "上海市浦东新区" },
+  公司名: "xxxxx科技",
+  公司信息: { 名称: "Xxxxx 科技", 行业: "软件开发", 成立年份: 2024, 地址: "上海市浦东新区" },
   项目进度: 78,
   团队评分: 4.5,
   订单: {
@@ -42,6 +42,16 @@ const sharedData = {
     ],
     收货地址: "上海市浦东新区张江镇 XX 路 100 号",
   },
+  订单2: {
+    订单号: "O202402280002",
+    状态: "待发货",
+    金额: 158,
+    下单时间: "2026-02-27 09:15",
+    商品列表: [{ 商品名: "实战手册", 数量: 1, 单价: 158 }],
+    收货地址: "北京市海淀区中关村大街 1 号",
+  },
+  完成度: 65,
+  满意度: 4.8,
 };
 
 const appRef: { current: XLangApp } = { current: null! };
@@ -67,12 +77,14 @@ const divider = document.getElementById("divider")!;
 
 const STATIC_CODE = `# X-Lang 组件一览
 
-本页面展示了所有可用的 x-lang 渲染组件。
+本页面展示所有可用的 x-lang 渲染组件，每种组件提供多种用法示例。
 
-## Feedback 反馈
+---
+
+## 1. Alert 提示
 
 \`\`\`x-lang
-alert(title = "欢迎", description = "这是一个 info 提示，支持标题和描述。", type = "info")
+alert(title = "欢迎", description = "支持标题与描述，type 为 info。", type = "info")
 \`\`\`
 
 \`\`\`x-lang
@@ -83,9 +95,13 @@ alert(title = "操作成功", type = "success")
 alert(title = "注意", description = "某些配置可能影响性能。", type = "warning")
 \`\`\`
 
-## Data 数据展示
+\`\`\`x-lang
+alert(title = "请求失败", description = "请检查网络后重试。", type = "error")
+\`\`\`
 
-### 统计数值
+---
+
+## 2. Statistic 统计数值
 
 \`\`\`x-lang
 statistic("员工总数", 4)
@@ -95,37 +111,101 @@ statistic("员工总数", 4)
 statistic(title = "平均薪资", value = 26250, suffix = "元")
 \`\`\`
 
-### 进度条
+\`\`\`x-lang
+statistic(title = "年度营收", value = 1200000, prefix = "¥", suffix = "")
+\`\`\`
+
+\`\`\`x-lang
+statistic("项目完成度", 100)
+\`\`\`
+
+---
+
+## 3. Progress 进度条
 
 \`\`\`x-lang
 progress(项目进度, status = "success")
 \`\`\`
 
-### 标签
+\`\`\`x-lang
+progress(完成度, status = "warning")
+\`\`\`
+
+\`\`\`x-lang
+progress(65, status = "exception")
+\`\`\`
+
+\`\`\`x-lang
+progress(100)
+\`\`\`
+
+---
+
+## 4. Tag 标签
 
 \`\`\`x-lang
 tag("工程部", "设计部", "产品部", type = "primary")
 \`\`\`
 
-### 评分
+\`\`\`x-lang
+tag("已完成", "已通过", type = "success")
+\`\`\`
+
+\`\`\`x-lang
+tag("待审核", "处理中", type = "warning")
+\`\`\`
+
+\`\`\`x-lang
+tag("已拒绝", "已取消", type = "danger")
+\`\`\`
+
+\`\`\`x-lang
+tag("标签一", "标签二", "标签三", type = "info")
+\`\`\`
+
+---
+
+## 5. Rate 评分
 
 \`\`\`x-lang
 rate(团队评分)
 \`\`\`
 
-### 描述列表
+\`\`\`x-lang
+rate(满意度)
+\`\`\`
+
+\`\`\`x-lang
+rate(4)
+\`\`\`
+
+---
+
+## 6. Descriptions 描述列表
 
 \`\`\`x-lang
 descriptions(公司信息)
 \`\`\`
 
-### 表格
+\`\`\`x-lang
+descriptions(公司信息, column = 1)
+\`\`\`
+
+---
+
+## 7. Table 表格
 
 \`\`\`x-lang
 table(用户列表)
 \`\`\`
 
-## 按钮
+\`\`\`x-lang
+table(用户列表, 姓名, 部门, 薪资)
+\`\`\`
+
+---
+
+## 8. Button 按钮
 
 \`\`\`x-lang
 button(text = "主要按钮", type = "primary")
@@ -136,31 +216,91 @@ button(text = "成功按钮", type = "success")
 \`\`\`
 
 \`\`\`x-lang
+button(text = "警告按钮", type = "warning")
+\`\`\`
+
+\`\`\`x-lang
+button(text = "危险按钮", type = "danger")
+\`\`\`
+
+\`\`\`x-lang
+button(text = "小号按钮", type = "primary", size = "small")
+\`\`\`
+
+\`\`\`x-lang
+button(text = "大号按钮", type = "default", size = "large")
+\`\`\`
+
+\`\`\`x-lang
 button(text = "点我提示", onClick = "操作成功！")
 \`\`\`
 
-## 卡片
+---
+
+## 9. Card 卡片
 
 \`\`\`x-lang
 card(title = "项目概要", content = "本季度共完成 3 个里程碑，团队整体表现优异。")
 \`\`\`
 
-## 订单详情卡
+\`\`\`x-lang
+card(title = "无阴影", content = "shadow = never 时卡片无阴影。", shadow = "never")
+\`\`\`
+
+\`\`\`x-lang
+card(title = "常显阴影", content = "shadow = always 时阴影始终显示。", shadow = "always")
+\`\`\`
+
+\`\`\`x-lang
+card("仅内容", "不传 title 时只显示内容区域。")
+\`\`\`
+
+---
+
+## 10. OrderCard 订单详情卡
 
 \`\`\`x-lang
 OrderCard(订单)
 \`\`\`
 
-## 结果页
+\`\`\`x-lang
+OrderCard(订单2)
+\`\`\`
 
 \`\`\`x-lang
-result(title = "页面加载完成", subtitle = "所有组件已渲染成功", type = "success")
+OrderCard(订单号 = "O2024000001", 状态 = "已完成", 金额 = 88, 下单时间 = "2026-01-01 12:00", 收货地址 = "示例地址")
 \`\`\`
+
+---
+
+## 11. Result 结果页
+
+\`\`\`x-lang
+result(title = "页面加载完成", subtitle = "所有组件已渲染成功。", type = "success")
+\`\`\`
+
+\`\`\`x-lang
+result(title = "暂无数据", subtitle = "请先导入或创建数据。", type = "info")
+\`\`\`
+
+\`\`\`x-lang
+result(title = "操作失败", subtitle = "请稍后重试或联系管理员。", type = "error")
+\`\`\`
+
+\`\`\`x-lang
+result(title = "请确认", subtitle = "当前操作可能产生风险。", type = "warning")
+\`\`\`
+
+---
+
+## 小结
+
+以上覆盖了 **alert、statistic、progress、tag、rate、descriptions、table、button、card、OrderCard、result** 共 11 类组件，可切换顶部组件库查看不同 UI 风格。
 `;
 
-const STREAM_CONTENT = `# X-Lang 科技 · 年度分析报告
+const STREAM_CONTENT = `# Xxxxx 科技 · 年度分析报告
 
-你好！以下是我根据你提供的数据为 **X-Lang 科技** 生成的年度分析报告。
+你好！以下是根据你提供的数据为 **Xxxxx 科技** 生成的年度分析报告，涵盖所有组件类型。
 
 \`\`\`x-lang
 alert(title = "数据已更新", description = "以下数据截至 2026 年 Q1，已包含最新季度信息。", type = "info")
@@ -183,13 +323,25 @@ statistic(title = "平均薪资", value = 26250, suffix = "元")
 \`\`\`
 
 \`\`\`x-lang
+statistic(title = "完成度", value = 78, suffix = "%")
+\`\`\`
+
+\`\`\`x-lang
 progress(项目进度, status = "success")
 \`\`\`
 
-## 部门分布
+\`\`\`x-lang
+progress(完成度, status = "warning")
+\`\`\`
+
+## 部门与状态
 
 \`\`\`x-lang
 tag("工程部", "设计部", "产品部", type = "primary")
+\`\`\`
+
+\`\`\`x-lang
+tag("已完成", "进行中", type = "success")
 \`\`\`
 
 ## 员工花名册
@@ -198,10 +350,22 @@ tag("工程部", "设计部", "产品部", type = "primary")
 table(用户列表)
 \`\`\`
 
-## 团队评价
+\`\`\`x-lang
+table(用户列表, 姓名, 部门, 薪资)
+\`\`\`
+
+## 评价与反馈
 
 \`\`\`x-lang
 rate(团队评分)
+\`\`\`
+
+\`\`\`x-lang
+rate(满意度)
+\`\`\`
+
+\`\`\`x-lang
+alert(title = "指标说明", description = "团队评分与满意度由上月调研汇总。", type = "info")
 \`\`\`
 
 ## 快速操作
@@ -215,13 +379,21 @@ button(text = "发送邮件", type = "success")
 \`\`\`
 
 \`\`\`x-lang
+button(text = "点我提示", onClick = "报告已复制到剪贴板")
+\`\`\`
+
+## 项目与订单
+
+\`\`\`x-lang
 card(title = "项目概要", content = "本季度共完成 3 个里程碑，团队整体表现优异。")
 \`\`\`
 
-## 订单详情
-
 \`\`\`x-lang
 OrderCard(订单)
+\`\`\`
+
+\`\`\`x-lang
+OrderCard(订单2)
 \`\`\`
 
 ## 代码演示
@@ -232,16 +404,14 @@ OrderCard(订单)
 标题
 \`\`\`
 
-## 薪资明细
-
-\`\`\`x-lang
-table(用户列表, 姓名, 部门, 薪资)
-\`\`\`
-
 ## 总结
 
 \`\`\`x-lang
 result(title = "报告生成完毕", subtitle = "已为你分析 4 名员工数据，如有疑问请随时告诉我。", type = "success")
+\`\`\`
+
+\`\`\`x-lang
+alert(title = "感谢使用", description = "可切换顶部 Element / Arco / Ant Design 查看不同 UI 风格。", type = "success")
 \`\`\`
 `;
 
