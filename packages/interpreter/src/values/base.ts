@@ -1,4 +1,4 @@
-export abstract class ZValue {
+export abstract class Xvalue {
   abstract get kind(): string;
 
   abstract unbox(): unknown;

@@ -1,8 +1,8 @@
-import { ZValue } from "./base.js";
+import { Xvalue } from "./base.js";
 
 const NULL_SINGLETON = Symbol("ZNull");
 
-export class ZNull extends ZValue {
+export class ZNull extends Xvalue {
   static readonly instance = new ZNull(NULL_SINGLETON);
 
   private constructor(_token: typeof NULL_SINGLETON) {

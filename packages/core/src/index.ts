@@ -43,7 +43,7 @@ export { type ASTVisitor, visitNode } from "@x-lang/ast";
 
 // Value domain — basic types
 export {
-  ZValue,
+  Xvalue,
   ZNumber,
   ZString,
   ZBool,

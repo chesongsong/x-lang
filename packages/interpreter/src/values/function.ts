@@ -1,8 +1,8 @@
 import type { BlockStatement, Expression } from "@x-lang/types";
-import { ZValue } from "./base.js";
+import { Xvalue } from "./base.js";
 import type { Environment } from "../environment.js";
 
-export class ZFunction extends ZValue {
+export class ZFunction extends Xvalue {
   readonly name: string;
   readonly params: string[];
   readonly body: Expression | BlockStatement;

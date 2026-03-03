@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 import type { Dayjs, ConfigType } from "dayjs";
-import { ZValue } from "./base.js";
+import { Xvalue } from "./base.js";
 
-export class ZDate extends ZValue {
+export class ZDate extends Xvalue {
   readonly inner: Dayjs;
 
   constructor(value?: ConfigType) {

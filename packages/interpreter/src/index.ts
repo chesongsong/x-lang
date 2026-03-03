@@ -1,5 +1,5 @@
 // Value domain — basic types
-export { ZValue } from "./values/base.js";
+export { Xvalue } from "./values/base.js";
 export { ZNumber } from "./values/number.js";
 export { ZString } from "./values/string.js";
 export { ZBool } from "./values/bool.js";

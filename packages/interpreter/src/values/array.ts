@@ -1,10 +1,10 @@
-import { ZValue } from "./base.js";
+import { Xvalue } from "./base.js";
 import { ZNull } from "./null.js";
 
-export class ZArray extends ZValue {
-  readonly elements: ZValue[];
+export class ZArray extends Xvalue {
+  readonly elements: Xvalue[];
 
-  constructor(elements: ZValue[]) {
+  constructor(elements: Xvalue[]) {
     super();
     this.elements = elements;
   }
@@ -17,11 +17,11 @@ export class ZArray extends ZValue {
     return this.elements.length;
   }
 
-  get(index: number): ZValue {
+  get(index: number): Xvalue {
     return this.elements[index] ?? ZNull.instance;
   }
 
-  set(index: number, value: ZValue): void {
+  set(index: number, value: Xvalue): void {
     this.elements[index] = value;
   }
 

@@ -1,10 +1,10 @@
-import { ZValue } from "./base.js";
+import { Xvalue } from "./base.js";
 import { ZNull } from "./null.js";
 
-export class ZObject extends ZValue {
-  readonly entries: Record<string, ZValue>;
+export class ZObject extends Xvalue {
+  readonly entries: Record<string, Xvalue>;
 
-  constructor(entries: Record<string, ZValue>) {
+  constructor(entries: Record<string, Xvalue>) {
     super();
     this.entries = entries;
   }
@@ -13,11 +13,11 @@ export class ZObject extends ZValue {
     return "object";
   }
 
-  get(key: string): ZValue {
+  get(key: string): Xvalue {
     return this.entries[key] ?? ZNull.instance;
   }
 
-  set(key: string, value: ZValue): void {
+  set(key: string, value: Xvalue): void {
     this.entries[key] = value;
   }
 

@@ -1,4 +1,4 @@
-export { ZValue } from "./base.js";
+export { Xvalue } from "./base.js";
 export { ZNumber } from "./number.js";
 export { ZString } from "./string.js";
 export { ZBool } from "./bool.js";
@@ -8,7 +8,7 @@ export { ZObject } from "./object.js";
 export { ZFunction } from "./function.js";
 export { ZDate } from "./date.js";
 
-import { ZValue } from "./base.js";
+import { Xvalue } from "./base.js";
 import { ZNumber } from "./number.js";
 import { ZString } from "./string.js";
 import { ZBool } from "./bool.js";
@@ -17,7 +17,7 @@ import { ZArray } from "./array.js";
 import { ZObject } from "./object.js";
 import { ZDate } from "./date.js";
 
-export function box(value: unknown): ZValue {
+export function box(value: unknown): Xvalue {
   if (value === null || value === undefined) return ZNull.instance;
   if (typeof value === "number") return new ZNumber(value);
   if (typeof value === "string") return new ZString(value);
@@ -29,7 +29,7 @@ export function box(value: unknown): ZValue {
   }
 
   if (typeof value === "object") {
-    const entries: Record<string, ZValue> = {};
+    const entries: Record<string, Xvalue> = {};
     for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
       entries[k] = box(v);
     }

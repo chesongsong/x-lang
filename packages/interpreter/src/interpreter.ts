@@ -24,7 +24,7 @@ import type {
   Parameter,
 } from "@x-lang/types";
 import { Environment } from "./environment.js";
-import { ZValue } from "./values/base.js";
+import { Xvalue } from "./values/base.js";
 import { ZNumber } from "./values/number.js";
 import { ZString } from "./values/string.js";
 import { ZBool } from "./values/bool.js";
@@ -71,16 +71,16 @@ export class Interpreter implements Evaluator {
   private executeScopeBlock(
     scope: ScopeBlock,
     parentEnv?: Environment,
-  ): ZValue {
+  ): Xvalue {
     const env = parentEnv ? new Environment(parentEnv) : new Environment();
-    let lastValue: ZValue = ZNull.instance;
+    let lastValue: Xvalue = ZNull.instance;
     for (const stmt of scope.body) {
       lastValue = this.executeStatement(stmt, env);
     }
     return lastValue;
   }
 
-  private executeStatement(stmt: Statement, env: Environment): ZValue {
+  private executeStatement(stmt: Statement, env: Environment): Xvalue {
     switch (stmt.type) {
       case "VariableDeclaration":
         return this.executeVariableDeclaration(stmt, env);
@@ -110,7 +110,7 @@ export class Interpreter implements Evaluator {
   private executeVariableDeclaration(
     stmt: VariableDeclaration,
     env: Environment,
-  ): ZValue {
+  ): Xvalue {
     const value = this.evaluate(stmt.init, env);
     env.define(stmt.name, value);
     return value;
@@ -119,7 +119,7 @@ export class Interpreter implements Evaluator {
   private executeFunctionDeclaration(
     stmt: FunctionDeclaration,
     env: Environment,
-  ): ZValue {
+  ): Xvalue {
     const fn = new ZFunction(
       stmt.name,
       stmt.params.map((p: Parameter) => p.name),
@@ -133,11 +133,11 @@ export class Interpreter implements Evaluator {
   private executeExpressionStatement(
     stmt: ExpressionStatement,
     env: Environment,
-  ): ZValue {
+  ): Xvalue {
     return this.evaluate(stmt.expression, env);
   }
 
-  private executeIfStatement(stmt: IfStatement, env: Environment): ZValue {
+  private executeIfStatement(stmt: IfStatement, env: Environment): Xvalue {
     const test = this.evaluate(stmt.test, env);
     if (test.isTruthy()) {
       return this.executeBlock(stmt.consequent, env);
@@ -154,8 +154,8 @@ export class Interpreter implements Evaluator {
   private executeWhileStatement(
     stmt: WhileStatement,
     env: Environment,
-  ): ZValue {
-    let lastValue: ZValue = ZNull.instance;
+  ): Xvalue {
+    let lastValue: Xvalue = ZNull.instance;
     let iterations = 0;
     while (this.evaluate(stmt.test, env).isTruthy()) {
       if (++iterations > MAX_LOOP_ITERATIONS) {
@@ -172,10 +172,10 @@ export class Interpreter implements Evaluator {
     return lastValue;
   }
 
-  private executeForStatement(stmt: ForStatement, env: Environment): ZValue {
+  private executeForStatement(stmt: ForStatement, env: Environment): Xvalue {
     const forEnv = new Environment(env);
     this.evaluate(stmt.init, forEnv);
-    let lastValue: ZValue = ZNull.instance;
+    let lastValue: Xvalue = ZNull.instance;
     let iterations = 0;
     while (this.evaluate(stmt.test, forEnv).isTruthy()) {
       if (++iterations > MAX_LOOP_ITERATIONS) {
@@ -206,13 +206,13 @@ export class Interpreter implements Evaluator {
     throw new ReturnSignal(value);
   }
 
-  private executeBlock(block: BlockStatement, parentEnv: Environment): ZValue {
+  private executeBlock(block: BlockStatement, parentEnv: Environment): Xvalue {
     const env = new Environment(parentEnv);
     return this.executeBlockInEnv(block, env);
   }
 
-  private executeBlockInEnv(block: BlockStatement, env: Environment): ZValue {
-    let lastValue: ZValue = ZNull.instance;
+  private executeBlockInEnv(block: BlockStatement, env: Environment): Xvalue {
+    let lastValue: Xvalue = ZNull.instance;
     for (const stmt of block.body) {
       lastValue = this.executeStatement(stmt, env);
     }
@@ -223,7 +223,7 @@ export class Interpreter implements Evaluator {
   // Expression evaluation (implements Evaluator interface)
   // -------------------------------------------------------------------------
 
-  evaluate(expr: Expression, env: Environment): ZValue {
+  evaluate(expr: Expression, env: Environment): Xvalue {
     switch (expr.type) {
       case "NumberLiteral":
         return new ZNumber(expr.value);
@@ -258,7 +258,7 @@ export class Interpreter implements Evaluator {
     }
   }
 
-  private evaluateBinary(expr: BinaryExpression, env: Environment): ZValue {
+  private evaluateBinary(expr: BinaryExpression, env: Environment): Xvalue {
     const left = this.evaluate(expr.left, env);
     const right = this.evaluate(expr.right, env);
 
@@ -302,7 +302,7 @@ export class Interpreter implements Evaluator {
     }
   }
 
-  private evaluateUnary(expr: UnaryExpression, env: Environment): ZValue {
+  private evaluateUnary(expr: UnaryExpression, env: Environment): Xvalue {
     const arg = this.evaluate(expr.argument, env);
     switch (expr.operator) {
       case "-":
@@ -317,7 +317,7 @@ export class Interpreter implements Evaluator {
   private evaluateAssignment(
     expr: AssignmentExpression,
     env: Environment,
-  ): ZValue {
+  ): Xvalue {
     const value = this.evaluate(expr.value, env);
 
     if (expr.target.type === "Identifier") {
@@ -383,13 +383,13 @@ export class Interpreter implements Evaluator {
     throw new Error("Invalid assignment target");
   }
 
-  private applyCompoundOp(cur: ZValue, value: ZValue, op: string): ZValue {
+  private applyCompoundOp(cur: Xvalue, value: Xvalue, op: string): Xvalue {
     if (op === "+=") return this.applyAdd(cur, value);
     if (op === "-=") return new ZNumber(cur.toNumber() - value.toNumber());
     return value;
   }
 
-  private applyAdd(left: ZValue, right: ZValue): ZValue {
+  private applyAdd(left: Xvalue, right: Xvalue): Xvalue {
     if (left instanceof ZString || right instanceof ZString) {
       const l = left instanceof ZNull ? "null" : String(left.unbox());
       const r = right instanceof ZNull ? "null" : String(right.unbox());
@@ -398,7 +398,7 @@ export class Interpreter implements Evaluator {
     return new ZNumber(left.toNumber() + right.toNumber());
   }
 
-  private evaluateCall(expr: CallExpression, env: Environment): ZValue {
+  private evaluateCall(expr: CallExpression, env: Environment): Xvalue {
     if (expr.callee.type === "Identifier") {
       const builtin = this.builtins.get(expr.callee.name);
       if (builtin) {
@@ -425,7 +425,7 @@ export class Interpreter implements Evaluator {
     }
 
     try {
-      let lastValue: ZValue = ZNull.instance;
+      let lastValue: Xvalue = ZNull.instance;
       for (const stmt of (callee.body as BlockStatement).body) {
         lastValue = this.executeStatement(stmt, callEnv);
       }
@@ -436,7 +436,7 @@ export class Interpreter implements Evaluator {
     }
   }
 
-  private evaluateMember(expr: MemberExpression, env: Environment): ZValue {
+  private evaluateMember(expr: MemberExpression, env: Environment): Xvalue {
     const obj = this.evaluate(expr.object, env);
     if (obj instanceof ZObject) {
       return obj.get(expr.property);
@@ -447,7 +447,7 @@ export class Interpreter implements Evaluator {
     return ZNull.instance;
   }
 
-  private evaluateIndex(expr: IndexExpression, env: Environment): ZValue {
+  private evaluateIndex(expr: IndexExpression, env: Environment): Xvalue {
     const obj = this.evaluate(expr.object, env);
     const idx = this.evaluate(expr.index, env);
     if (obj instanceof ZArray && idx instanceof ZNumber) {
@@ -459,12 +459,12 @@ export class Interpreter implements Evaluator {
     return ZNull.instance;
   }
 
-  private evaluateArray(expr: ArrayExpression, env: Environment): ZValue {
+  private evaluateArray(expr: ArrayExpression, env: Environment): Xvalue {
     return new ZArray(expr.elements.map((el: Expression) => this.evaluate(el, env)));
   }
 
-  private evaluateObject(expr: ObjectExpression, env: Environment): ZValue {
-    const entries: Record<string, ZValue> = {};
+  private evaluateObject(expr: ObjectExpression, env: Environment): Xvalue {
+    const entries: Record<string, Xvalue> = {};
     for (const prop of expr.properties) {
       entries[prop.key] = this.evaluate(prop.value, env);
     }
@@ -474,7 +474,7 @@ export class Interpreter implements Evaluator {
   private evaluateArrowFunction(
     expr: ArrowFunctionExpression,
     env: Environment,
-  ): ZValue {
+  ): Xvalue {
     return new ZFunction(
       "<anonymous>",
       expr.params.map((p: Parameter) => p.name),
@@ -487,7 +487,7 @@ export class Interpreter implements Evaluator {
   // Helpers
   // -------------------------------------------------------------------------
 
-  private isEqual(a: ZValue, b: ZValue): boolean {
+  private isEqual(a: Xvalue, b: Xvalue): boolean {
     if (a instanceof ZNull && b instanceof ZNull) return true;
     if (a.kind !== b.kind) return false;
     return a.unbox() === b.unbox();

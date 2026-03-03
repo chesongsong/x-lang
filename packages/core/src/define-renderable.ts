@@ -1,7 +1,7 @@
 import type { Expression, CallArgument } from "@x-lang/types";
 import type { BuiltinFunction, Evaluator } from "@x-lang/interpreter";
 import { ZRenderCustom } from "@x-lang/interpreter";
-import type { ZValue } from "@x-lang/interpreter";
+import type { Xvalue } from "@x-lang/interpreter";
 import { Environment, box } from "@x-lang/interpreter";
 
 // ---------------------------------------------------------------------------
@@ -28,9 +28,9 @@ export type RenderableHandler = (
 export interface RenderableContext {
   readonly args: readonly CallArgument[];
   readonly env: Environment;
-  evaluate(expr: Expression, env?: Environment): ZValue;
+  evaluate(expr: Expression, env?: Environment): Xvalue;
   createChildEnv(parent?: Environment): Environment;
-  box(value: unknown): ZValue;
+  box(value: unknown): Xvalue;
 }
 
 /**
@@ -61,7 +61,7 @@ class SimpleRenderableBuiltin implements BuiltinFunction {
     args: readonly CallArgument[],
     env: Environment,
     evaluator: Evaluator,
-  ): ZValue {
+  ): Xvalue {
     const positional: unknown[] = [];
     const named: Record<string, unknown> = {};
 
@@ -90,11 +90,11 @@ class AdvancedRenderableBuiltin implements BuiltinFunction {
     args: readonly CallArgument[],
     env: Environment,
     evaluator: Evaluator,
-  ): ZValue {
+  ): Xvalue {
     const ctx: RenderableContext = {
       args,
       env,
-      evaluate(expr: Expression, customEnv?: Environment): ZValue {
+      evaluate(expr: Expression, customEnv?: Environment): Xvalue {
         return evaluator.evaluate(expr, customEnv ?? env);
       },
       createChildEnv(parent?: Environment): Environment {

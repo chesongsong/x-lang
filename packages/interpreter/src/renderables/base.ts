@@ -1,6 +1,6 @@
-import { ZValue } from "../values/base.js";
+import { Xvalue } from "../values/base.js";
 
-export abstract class ZRenderable extends ZValue {
+export abstract class ZRenderable extends Xvalue {
   abstract get renderData(): unknown;
 
   unbox(): unknown {

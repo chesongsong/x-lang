@@ -1,8 +1,8 @@
-import type { ZValue } from "./values/base.js";
+import type { Xvalue } from "./values/base.js";
 
 export interface ScopeResult {
   readonly index: number;
-  readonly value: ZValue;
+  readonly value: Xvalue;
   readonly error?: string;
 }
 

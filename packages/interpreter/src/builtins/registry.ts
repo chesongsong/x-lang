@@ -1,9 +1,9 @@
 import type { Expression, CallArgument } from "@x-lang/types";
-import type { ZValue } from "../values/base.js";
+import type { Xvalue } from "../values/base.js";
 import type { Environment } from "../environment.js";
 
 export interface Evaluator {
-  evaluate(expr: Expression, env: Environment): ZValue;
+  evaluate(expr: Expression, env: Environment): Xvalue;
 }
 
 export interface BuiltinFunction {
@@ -11,7 +11,7 @@ export interface BuiltinFunction {
     args: readonly CallArgument[],
     env: Environment,
     evaluator: Evaluator,
-  ): ZValue;
+  ): Xvalue;
 }
 
 export class BuiltinRegistry {

@@ -1,5 +1,5 @@
 import type { OutputSegment } from "@x-lang/interpreter";
-import { ZValue, ZRenderable } from "@x-lang/interpreter";
+import { Xvalue, ZRenderable } from "@x-lang/interpreter";
 import type {
   ComponentFactory,
   ComponentHandle,
@@ -238,7 +238,7 @@ export class RenderEngine {
   }
 
   private renderScope(
-    result: { value: ZValue; error?: string },
+    result: { value: Xvalue; error?: string },
     slot: RenderedSlot,
   ): void {
     if (result.error) {

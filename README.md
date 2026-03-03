@@ -9,7 +9,7 @@
 │   ├── types/       @x-lang/types     — AST 节点类型、错误类、通用类型
 │   ├── parser/      @x-lang/parser     — ANTLR4 语法、词法/语法分析
 │   ├── ast/         @x-lang/ast        — CST→AST 构建、作用域解析、AST 访问
-│   ├── interpreter/ @x-lang/interpreter — 解释执行、ZValue 值域、内置函数
+│   ├── interpreter/ @x-lang/interpreter — 解释执行、Xvalue 值域、内置函数
 │   ├── render/      @x-lang/render     — 渲染引擎、组件工厂抽象、增量 DOM
 │   └── core/        @x-lang/core       — 对外 API（parse / run / XLangApp / defineComponent 等）
 └── playground/      @x-lang/playground — Vite + Vue 演示：Monaco 编辑、多 UI 库切换、流式演示
@@ -32,7 +32,7 @@ npm run dev
 - **作用域**：支持多个程序段落（scope），彼此独立，可同名变量。
 - **Markdown 混合**：仅 \`\`\`x-lang ... \`\`\` 内的内容参与执行与自定义渲染；其余按 Markdown 输出。
 - **命名参数**：如 `button(text = "确定", type = "primary")`，支持懒求值与 `自己` 关键字。
-- **类型与值**：ZValue 体系（ZNumber、ZString、ZBool、ZNull、ZArray、ZObject、ZFunction、ZDate），`box` / `unbox` 用于 JS 与 x-lang 值互转。
+- **类型与值**：Xvalue 体系（ZNumber、ZString、ZBool、ZNull、ZArray、ZObject、ZFunction、ZDate），`box` / `unbox` 用于 JS 与 x-lang 值互转。
 - **表达式**：四则运算、比较、逻辑、成员访问、下标、数组/对象字面量、函数调用等；支持 ASI（自动分号插入）。
 
 ## 核心 API
