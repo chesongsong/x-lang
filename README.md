@@ -32,7 +32,7 @@ npm run dev
 - **作用域**：支持多个程序段落（scope），彼此独立，可同名变量。
 - **Markdown 混合**：仅 \`\`\`x-lang ... \`\`\` 内的内容参与执行与自定义渲染；其余按 Markdown 输出。
 - **命名参数**：如 `button(text = "确定", type = "primary")`，支持懒求值与 `自己` 关键字。
-- **类型与值**：Xvalue 体系（ZNumber、ZString、ZBool、ZNull、ZArray、ZObject、ZFunction、ZDate），`box` / `unbox` 用于 JS 与 x-lang 值互转。
+- **类型与值**：Xvalue 体系（XNumber、XString、XBool、XNull、XArray、XObject、XFunction、XDate），`box` / `unbox` 用于 JS 与 x-lang 值互转。
 - **表达式**：四则运算、比较、逻辑、成员访问、下标、数组/对象字面量、函数调用等；支持 ASI（自动分号插入）。
 
 ## 核心 API
@@ -51,6 +51,14 @@ statistic("总数", 10)
 \`\`\`
 `, { variables: { 总数: 10 } });
 // segments: MarkdownSegment | ScopeSegment（含执行结果）
+```
+
+### Tokenize（高层）
+
+```typescript
+import { tokenize } from "@x-lang/core";
+
+const { tokens, errors } = tokenize(`a = 1`);
 ```
 
 ### 应用与渲染（XLangApp）
@@ -94,6 +102,37 @@ app.use(myButton);
 
 - 渲染上下文 `RenderContext` 提供 `EventBus`，可 `emit(name, payload)` / `on(name, handler)`。
 - 例如按钮的 `onClick` 在 UI 中触发后，通过 Message/Toast 展示；也可由业务监听事件做后续逻辑。
+
+#### XLangApp 扩展方法
+
+- `on(component, event, handler)` / `off(component, event, handler?)`
+- `getInstances(kind?)` 获取当前渲染实例
+- `updateInstance(kind, index, data)` 更新指定实例
+- `reset()` 清理当前渲染内容
+
+### Renderable（自定义可渲染值）
+
+```typescript
+import { defineRenderable, XRenderable, XRenderCustom } from "@x-lang/core";
+```
+
+### AST 与访问器
+
+```typescript
+import { ASTBuilder, ScopeResolver, visitNode } from "@x-lang/core";
+```
+
+### 解释器与运行时
+
+```typescript
+import { Interpreter, execute, BuiltinRegistry, Environment } from "@x-lang/core";
+```
+
+### 低层 Parser
+
+```typescript
+import { createLexer, parse as parseCST, tokenize as tokenizeRaw, locationFromToken } from "@x-lang/core";
+```
 
 ## 渲染架构
 
