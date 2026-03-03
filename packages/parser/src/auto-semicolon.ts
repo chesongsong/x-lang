@@ -25,6 +25,9 @@ const STATEMENT_ENDING_TOKENS = new Set([
 export class AutoSemicolonTokenSource implements TokenSource {
   private lastNonNewlineToken: Token | null = null;
   private pending: Token | null = null;
+  private parenDepth = 0;
+  private bracketDepth = 0;
+  private braceStack: boolean[] = [];
 
   // 绑定词法分析器
   constructor(private readonly lexer: XLangLexer) {}
@@ -42,6 +45,9 @@ export class AutoSemicolonTokenSource implements TokenSource {
 
       if (token.type === XLangLexer.EOF) {
         if (
+          this.parenDepth === 0 &&
+          this.bracketDepth === 0 &&
+          !this.hasOpenObjectBrace() &&
           this.lastNonNewlineToken &&
           STATEMENT_ENDING_TOKENS.has(this.lastNonNewlineToken.type)
         ) {
@@ -53,6 +59,9 @@ export class AutoSemicolonTokenSource implements TokenSource {
       }
 
       if (token.type === XLangLexer.NEWLINE) {
+        if (this.parenDepth > 0 || this.bracketDepth > 0 || this.hasOpenObjectBrace()) {
+          continue;
+        }
         if (
           this.lastNonNewlineToken &&
           STATEMENT_ENDING_TOKENS.has(this.lastNonNewlineToken.type)
@@ -62,9 +71,32 @@ export class AutoSemicolonTokenSource implements TokenSource {
         continue;
       }
 
+      if (token.type === XLangLexer.LPAREN) this.parenDepth += 1;
+      if (token.type === XLangLexer.RPAREN) this.parenDepth = Math.max(0, this.parenDepth - 1);
+      if (token.type === XLangLexer.LBRACKET) this.bracketDepth += 1;
+      if (token.type === XLangLexer.RBRACKET) this.bracketDepth = Math.max(0, this.bracketDepth - 1);
+      if (token.type === XLangLexer.LBRACE) {
+        const prevType = this.lastNonNewlineToken?.type;
+        const isObject =
+          prevType === XLangLexer.ASSIGN ||
+          prevType === XLangLexer.COMMA ||
+          prevType === XLangLexer.LPAREN ||
+          prevType === XLangLexer.LBRACKET ||
+          prevType === XLangLexer.COLON ||
+          prevType === XLangLexer.RETURN;
+        this.braceStack.push(isObject);
+      }
+      if (token.type === XLangLexer.RBRACE) {
+        this.braceStack.pop();
+      }
+
       this.lastNonNewlineToken = token;
       return token;
     }
+  }
+
+  private hasOpenObjectBrace(): boolean {
+    return this.braceStack.some(Boolean);
   }
 
   // 以当前位置生成分号 token

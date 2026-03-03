@@ -15,6 +15,7 @@
     "@x-lang/core": "workspace:*",
     "@x-lang/render": "workspace:*",
     "ant-design-vue": "^4.2.6",
+    "echarts": "^5.5.1",
     "element-plus": "^2.13.2",
     "monaco-editor": "^0.55.1",
     "vue": "^3.5.29"

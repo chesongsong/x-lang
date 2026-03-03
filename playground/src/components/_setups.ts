@@ -1,6 +1,54 @@
 import type { SimpleSetup, AdvancedSetup, RenderableContext } from "@x-lang/core";
 import { XArray, XObject } from "@x-lang/core";
 
+function coerceText(value: unknown): string {
+  if (value && typeof value === "object" && "toString" in value) {
+    return (value as { toString: () => string }).toString();
+  }
+  return String(value ?? "");
+}
+
+function coerceArray(value: unknown): unknown[] {
+  if (value instanceof XArray) return value.elements;
+  if (Array.isArray(value)) return value;
+  return [];
+}
+
+function coerceObject(value: unknown): Record<string, unknown> | null {
+  if (value instanceof XObject) return value.entries;
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return value as Record<string, unknown>;
+  }
+  return null;
+}
+
+function toPlain(value: unknown): unknown {
+  if (value instanceof XArray) {
+    return value.elements.map((item) => toPlain(item));
+  }
+  if (value instanceof XObject) {
+    const entries: Record<string, unknown> = {};
+    for (const [key, val] of Object.entries(value.entries)) {
+      entries[key] = toPlain(val);
+    }
+    return entries;
+  }
+  if (value && typeof value === "object") {
+    if ("unbox" in value && typeof (value as { unbox: () => unknown }).unbox === "function") {
+      return (value as { unbox: () => unknown }).unbox();
+    }
+    if (Array.isArray(value)) {
+      return value.map((item) => toPlain(item));
+    }
+    const entries: Record<string, unknown> = {};
+    for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
+      entries[key] = toPlain(val);
+    }
+    return entries;
+  }
+  return value;
+}
+
 // ---------------------------------------------------------------------------
 // Button
 // ---------------------------------------------------------------------------
@@ -147,6 +195,284 @@ export const descriptionsSetup: SimpleSetup<DescriptionsData> = (
     border: (named.border as boolean) ?? true,
   };
 };
+
+// ---------------------------------------------------------------------------
+// Drawer
+// ---------------------------------------------------------------------------
+
+export interface DrawerData {
+  readonly title: string;
+  readonly content: string;
+  readonly placement: string;
+  readonly size: string | number;
+  readonly open: boolean;
+}
+
+export const drawerSetup: SimpleSetup<DrawerData> = (args, named) => ({
+  title: (named.title as string) ?? (args[0] as string) ?? "抽屉标题",
+  content: (named.content as string) ?? (args[1] as string) ?? "这里是抽屉内容。",
+  placement: (named.placement as string) ?? "right",
+  size: (named.size as string | number) ?? "320px",
+  open: (named.open as boolean) ?? false,
+});
+
+// ---------------------------------------------------------------------------
+// Timeline
+// ---------------------------------------------------------------------------
+
+export interface TimelineItemData {
+  readonly title: string;
+  readonly time: string;
+  readonly type: string;
+}
+
+export interface TimelineData {
+  readonly items: readonly TimelineItemData[];
+}
+
+export const timelineSetup: SimpleSetup<TimelineData> = (args, named) => {
+  const raw = named.items ?? args[0];
+  const items: TimelineItemData[] = [];
+  for (const item of coerceArray(raw)) {
+    const obj = coerceObject(item);
+    if (!obj) continue;
+    const title = obj.标题 ?? obj.title ?? "";
+    const time = obj.时间 ?? obj.time ?? "";
+    const type = obj.类型 ?? obj.type ?? "";
+    items.push({
+      title: coerceText(title),
+      time: coerceText(time),
+      type: coerceText(type),
+    });
+  }
+
+  if (items.length === 0) {
+    items.push(
+      { title: "需求评审", time: "2026-01-08", type: "info" },
+      { title: "开发完成", time: "2026-02-02", type: "success" },
+      { title: "上线发布", time: "2026-02-20", type: "primary" },
+    );
+  }
+
+  return { items };
+};
+
+// ---------------------------------------------------------------------------
+// Collapse
+// ---------------------------------------------------------------------------
+
+export interface CollapseItemData {
+  readonly title: string;
+  readonly content: string;
+}
+
+export interface CollapseData {
+  readonly items: readonly CollapseItemData[];
+  readonly activeKeys: readonly string[];
+}
+
+export const collapseSetup: SimpleSetup<CollapseData> = (args, named) => {
+  const raw = named.items ?? args[0];
+  const items: CollapseItemData[] = [];
+  for (const item of coerceArray(raw)) {
+    const obj = coerceObject(item);
+    if (!obj) continue;
+    const title = obj.标题 ?? obj.title ?? "";
+    const content = obj.内容 ?? obj.content ?? "";
+    items.push({
+      title: coerceText(title),
+      content: coerceText(content),
+    });
+  }
+
+  if (items.length === 0) {
+    items.push(
+      { title: "支持哪些组件？", content: "目前支持基础展示与交互组件。" },
+      { title: "是否支持流式？", content: "支持流式渲染与骨架屏占位。" },
+      { title: "如何切换 UI 库？", content: "顶部按钮可切换 Element/Arco/Antd。" },
+    );
+  }
+
+  const activeKeys = (named.activeKeys as string[]) ?? items.map((_, i) => String(i));
+  return { items, activeKeys };
+};
+
+// ---------------------------------------------------------------------------
+// Dialog
+// ---------------------------------------------------------------------------
+
+export interface DialogData {
+  readonly title: string;
+  readonly content: string;
+  readonly open: boolean;
+  readonly width: string | number;
+  readonly triggerText: string;
+}
+
+export const dialogSetup: SimpleSetup<DialogData> = (args, named) => ({
+  title: (named.title as string) ?? (args[0] as string) ?? "对话框标题",
+  content: (named.content as string) ?? (args[1] as string) ?? "这里是对话框内容。",
+  open: (named.open as boolean) ?? false,
+  width: (named.width as string | number) ?? "420px",
+  triggerText: (named.triggerText as string) ?? "打开对话框",
+});
+
+// ---------------------------------------------------------------------------
+// Charts
+// ---------------------------------------------------------------------------
+
+export interface ChartData {
+  readonly option: Record<string, unknown>;
+  readonly height: number;
+}
+
+function buildChartData(
+  args: unknown[],
+  named: Record<string, unknown>,
+  fallback: Record<string, unknown>,
+): ChartData {
+  const rawOption = (named.option as Record<string, unknown>) ?? args[0];
+  const option = (toPlain(rawOption) as Record<string, unknown>) ?? fallback;
+  const height = (named.height as number) ?? (args[1] as number) ?? 280;
+  return { option, height };
+}
+
+const DEFAULT_LINE_OPTION = {
+  tooltip: { trigger: "axis" },
+  xAxis: { type: "category", data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] },
+  yAxis: { type: "value" },
+  series: [{ type: "line", data: [120, 132, 101, 134, 90, 230, 210] }],
+};
+
+const DEFAULT_AREA_OPTION = {
+  tooltip: { trigger: "axis" },
+  xAxis: { type: "category", boundaryGap: false, data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] },
+  yAxis: { type: "value" },
+  series: [{ type: "line", areaStyle: {}, data: [150, 230, 224, 218, 135, 147, 260] }],
+};
+
+const DEFAULT_BAR_OPTION = {
+  tooltip: { trigger: "axis" },
+  xAxis: { type: "category", data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] },
+  yAxis: { type: "value" },
+  series: [{ type: "bar", data: [10, 52, 200, 334, 390, 330, 220] }],
+};
+
+const DEFAULT_PIE_OPTION = {
+  tooltip: { trigger: "item" },
+  series: [
+    {
+      type: "pie",
+      radius: "60%",
+      data: [
+        { value: 1048, name: "Search" },
+        { value: 735, name: "Direct" },
+        { value: 580, name: "Email" },
+        { value: 484, name: "Union Ads" },
+        { value: 300, name: "Video Ads" },
+      ],
+    },
+  ],
+};
+
+const DEFAULT_SCATTER_OPTION = {
+  xAxis: { type: "value" },
+  yAxis: { type: "value" },
+  series: [
+    {
+      type: "scatter",
+      data: [
+        [10, 8],
+        [18, 15],
+        [25, 5],
+        [32, 28],
+        [40, 12],
+      ],
+    },
+  ],
+};
+
+const DEFAULT_CANDLE_OPTION = {
+  xAxis: { type: "category", data: ["Mon", "Tue", "Wed", "Thu", "Fri"] },
+  yAxis: { type: "value" },
+  series: [
+    {
+      type: "candlestick",
+      data: [
+        [20, 34, 10, 38],
+        [40, 35, 30, 50],
+        [31, 38, 33, 44],
+        [38, 15, 5, 42],
+        [30, 25, 20, 35],
+      ],
+    },
+  ],
+};
+
+const DEFAULT_RADAR_OPTION = {
+  tooltip: {},
+  radar: {
+    indicator: [
+      { name: "Sales", max: 6500 },
+      { name: "Admin", max: 16000 },
+      { name: "IT", max: 30000 },
+      { name: "Support", max: 38000 },
+      { name: "Dev", max: 52000 },
+      { name: "Marketing", max: 25000 },
+    ],
+  },
+  series: [
+    {
+      type: "radar",
+      data: [{ value: [4200, 3000, 20000, 35000, 50000, 18000], name: "预算" }],
+    },
+  ],
+};
+
+const DEFAULT_GRAPH_OPTION = {
+  tooltip: {},
+  series: [
+    {
+      type: "graph",
+      layout: "force",
+      data: [
+        { name: "主节点" },
+        { name: "节点 A" },
+        { name: "节点 B" },
+        { name: "节点 C" },
+      ],
+      links: [
+        { source: "主节点", target: "节点 A" },
+        { source: "主节点", target: "节点 B" },
+        { source: "主节点", target: "节点 C" },
+      ],
+    },
+  ],
+};
+
+export const linechartSetup: SimpleSetup<ChartData> = (args, named) =>
+  buildChartData(args, named, DEFAULT_LINE_OPTION);
+
+export const areachartSetup: SimpleSetup<ChartData> = (args, named) =>
+  buildChartData(args, named, DEFAULT_AREA_OPTION);
+
+export const barchartSetup: SimpleSetup<ChartData> = (args, named) =>
+  buildChartData(args, named, DEFAULT_BAR_OPTION);
+
+export const piechartSetup: SimpleSetup<ChartData> = (args, named) =>
+  buildChartData(args, named, DEFAULT_PIE_OPTION);
+
+export const scatterchartSetup: SimpleSetup<ChartData> = (args, named) =>
+  buildChartData(args, named, DEFAULT_SCATTER_OPTION);
+
+export const candlestickchartSetup: SimpleSetup<ChartData> = (args, named) =>
+  buildChartData(args, named, DEFAULT_CANDLE_OPTION);
+
+export const radarchartSetup: SimpleSetup<ChartData> = (args, named) =>
+  buildChartData(args, named, DEFAULT_RADAR_OPTION);
+
+export const graphchartSetup: SimpleSetup<ChartData> = (args, named) =>
+  buildChartData(args, named, DEFAULT_GRAPH_OPTION);
 
 // ---------------------------------------------------------------------------
 // Result

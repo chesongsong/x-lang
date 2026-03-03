@@ -19,7 +19,7 @@
     "build:ts": "tsc --build tsconfig.json",
     "build:bundle": "node scripts/build.mjs",
     "build": "npm run generate && npm run build:ts && npm run build:bundle",
-    "dev": "npm run build && npm -w playground run dev",
+    "dev": "npm run clean && npm run build && npm -w playground run dev",
     "clean": "rm -rf packages/*/dist packages/*/*.tsbuildinfo packages/parser/src/generated/*.ts packages/parser/src/generated/*.interp packages/parser/src/generated/*.tokens playground/node_modules/.vite"
   },
   "devDependencies": {
