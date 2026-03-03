@@ -283,6 +283,51 @@ export const formSetup: SimpleSetup<FormData> = (args, named) => {
 };
 
 // ---------------------------------------------------------------------------
+// Agent Chat
+// ---------------------------------------------------------------------------
+
+export interface AgentChatOption {
+  readonly label: string;
+  readonly value: string;
+}
+
+export interface AgentChatData {
+  readonly role: string;
+  readonly content: string;
+  readonly questionId: string;
+  readonly options: readonly AgentChatOption[];
+}
+
+// Normalize list entries into displayable options.
+function coerceOptions(value: unknown): AgentChatOption[] {
+  const raw = coerceArray(value);
+  return raw
+    .map((item, index) => {
+      const plain = toPlain(item);
+      if (plain && typeof plain === "object") {
+        const obj = plain as Record<string, unknown>;
+        const label = coerceText(obj.label ?? obj.text ?? obj.value ?? "");
+        const val = coerceText(obj.value ?? obj.label ?? obj.text ?? "");
+        if (label || val) {
+          return { label: label || val, value: val || label };
+        }
+      }
+      const text = coerceText(item);
+      return text
+        ? { label: text, value: text }
+        : { label: `选项${index + 1}`, value: `${index + 1}` };
+    })
+    .filter((opt) => opt.label.length > 0);
+}
+
+export const agentChatSetup: SimpleSetup<AgentChatData> = (args, named) => ({
+  role: (named.role as string) ?? "agent",
+  content: (named.content as string) ?? (args[0] as string) ?? "",
+  questionId: (named.questionId as string) ?? (named.id as string) ?? "",
+  options: coerceOptions((named.options as unknown) ?? (args[1] as unknown)),
+});
+
+// ---------------------------------------------------------------------------
 // Hotel Confirm Card
 // ---------------------------------------------------------------------------
 

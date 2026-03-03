@@ -103,6 +103,15 @@ app.use(myButton);
 - 渲染上下文 `RenderContext` 提供 `EventBus`，可 `emit(name, payload)` / `on(name, handler)`。
 - 例如按钮的 `onClick` 在 UI 中触发后，通过 Message/Toast 展示；也可由业务监听事件做后续逻辑。
 
+示例：监听 agentchat 选项回传
+
+```typescript
+app.on("agentchat", "select", (payload) => {
+  // payload: { questionId, value, label, role }
+  console.log("agentchat", payload);
+});
+```
+
 #### XLangApp 扩展方法
 
 - `on(component, event, handler)` / `off(component, event, handler?)`
@@ -167,6 +176,7 @@ import { createLexer, parse as parseCST, tokenize as tokenizeRaw, locationFromTo
 | **button** | 按钮 | `button(text = "确定", type = "primary", size = "default" \| "small" \| "large", onClick = "提示文案")` |
 | **card** | 卡片 | `card(title = "标题", content = "内容", shadow = "hover" \| "always" \| "never")` |
 | **ordercard** | 订单详情卡 | `ordercard(订单)` 或 `ordercard(订单号 = "…", 状态 = "已支付", 金额 = 99, …)` |
+| **agentchat** | Agent 交互气泡 | `agentchat(role = "agent", content = "问题", questionId = "q1", options = ["A", "B"])` |
 | **hotelconfirm** | 酒店变更确认卡 | `hotelconfirm(hotelName = "测试酒店123456", roomItems = [...], dateValue = "2026年2月12日", actionItems = [...])` |
 | **form** | 复杂表单 | `form(title = "立项表单", fields = 字段数组, column = 2)` |
 | **result** | 结果页 | `result(title = "完成", subtitle = "说明", type = "success" \| "info" \| "error" \| "warning")` |
