@@ -11,6 +11,7 @@ import "@arco-design/web-vue/es/collapse/style/css.js";
 import "@arco-design/web-vue/es/timeline/style/css.js";
 import "element-plus/es/components/collapse/style/css";
 import "element-plus/es/components/timeline/style/css";
+import "github-markdown-css/github-markdown-light.css";
 import "./style.css";
 
 self.MonacoEnvironment = {

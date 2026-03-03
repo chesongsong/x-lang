@@ -1,6 +1,6 @@
 <template>
   <div style="padding: 8px 0">
-    <ElCollapse :model-value="activeNames">
+    <ElCollapse v-model="activeNames">
       <ElCollapseItem
         v-for="(item, i) in items"
         :key="i"
@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { ref, watch } from "vue";
 import { ElCollapse, ElCollapseItem } from "element-plus";
 import "element-plus/es/components/collapse/style/css";
 
@@ -23,5 +23,11 @@ const props = defineProps<{
   activeKeys: readonly string[];
 }>();
 
-const activeNames = computed(() => props.activeKeys);
+const activeNames = ref<string[]>([...props.activeKeys]);
+watch(
+  () => props.activeKeys,
+  (next) => {
+    activeNames.value = [...next];
+  },
+);
 </script>
