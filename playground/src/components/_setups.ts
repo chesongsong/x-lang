@@ -197,6 +197,88 @@ export const descriptionsSetup: SimpleSetup<DescriptionsData> = (
 };
 
 // ---------------------------------------------------------------------------
+// Form
+// ---------------------------------------------------------------------------
+
+export interface FormField {
+  readonly label: string;
+  readonly prop: string;
+  readonly type: string;
+  readonly placeholder: string;
+  readonly required: boolean;
+  readonly options: readonly string[];
+  readonly span: number;
+  readonly rows: number;
+}
+
+export interface FormData {
+  readonly title: string;
+  readonly description: string;
+  readonly fields: readonly FormField[];
+  readonly submitText: string;
+  readonly resetText: string;
+  readonly labelWidth: string | number;
+  readonly column: number;
+}
+
+function coerceField(raw: unknown, index: number): FormField {
+  const plain = toPlain(raw);
+  if (!plain || typeof plain !== "object") {
+    return {
+      label: `字段${index + 1}`,
+      prop: `field${index + 1}`,
+      type: "text",
+      placeholder: "",
+      required: false,
+      options: [],
+      span: 12,
+      rows: 3,
+    };
+  }
+  const obj = plain as Record<string, unknown>;
+  const label =
+    coerceText(obj.label ?? obj.名称 ?? obj.name ?? `字段${index + 1}`);
+  const prop =
+    coerceText(obj.prop ?? obj.字段 ?? obj.key ?? `field${index + 1}`);
+  const type = coerceText(obj.type ?? obj.类型 ?? "text");
+  const placeholder = coerceText(obj.placeholder ?? obj.提示 ?? "");
+  const required = Boolean(obj.required ?? obj.必填 ?? false);
+  const options = coerceArray(obj.options ?? obj.选项 ?? []).map((item) =>
+    coerceText(item),
+  );
+  const span = Number(obj.span ?? obj.跨度 ?? 12);
+  const rows = Number(obj.rows ?? obj.行数 ?? 3);
+
+  return {
+    label,
+    prop,
+    type,
+    placeholder,
+    required,
+    options,
+    span: Number.isFinite(span) ? span : 12,
+    rows: Number.isFinite(rows) ? rows : 3,
+  };
+}
+
+export const formSetup: SimpleSetup<FormData> = (args, named) => {
+  const source = named.fields ?? args[0] ?? [];
+  const fields = coerceArray(source).map((item, index) =>
+    coerceField(item, index),
+  );
+
+  return {
+    title: (named.title as string) ?? "复杂表单示例",
+    description: (named.description as string) ?? "",
+    fields,
+    submitText: (named.submitText as string) ?? "提交",
+    resetText: (named.resetText as string) ?? "重置",
+    labelWidth: (named.labelWidth as string | number) ?? 120,
+    column: (named.column as number) ?? 2,
+  };
+};
+
+// ---------------------------------------------------------------------------
 // Drawer
 // ---------------------------------------------------------------------------
 

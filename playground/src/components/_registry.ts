@@ -15,6 +15,7 @@ import {
   cardSetup,
   orderCardSetup,
   tableSetup,
+  formSetup,
   drawerSetup,
   timelineSetup,
   collapseSetup,
@@ -42,6 +43,7 @@ import ElementResultView from "./element/ResultView.vue";
 import ElementRateView from "./element/RateView.vue";
 import ElementCardView from "./element/CardView.vue";
 import ElementOrderCardView from "./element/OrderCardView.vue";
+import ElementFormView from "./element/FormView.vue";
 import ElementDrawerView from "./element/DrawerView.vue";
 import ElementTimelineView from "./element/TimelineView.vue";
 import ElementCollapseView from "./element/CollapseView.vue";
@@ -58,6 +60,7 @@ import ArcoResultView from "./arco/ResultView.vue";
 import ArcoRateView from "./arco/RateView.vue";
 import ArcoCardView from "./arco/CardView.vue";
 import ArcoOrderCardView from "./arco/OrderCardView.vue";
+import ArcoFormView from "./arco/FormView.vue";
 import ArcoDrawerView from "./arco/DrawerView.vue";
 import ArcoTimelineView from "./arco/TimelineView.vue";
 import ArcoCollapseView from "./arco/CollapseView.vue";
@@ -74,6 +77,7 @@ import AntdResultView from "./antd/ResultView.vue";
 import AntdRateView from "./antd/RateView.vue";
 import AntdCardView from "./antd/CardView.vue";
 import AntdOrderCardView from "./antd/OrderCardView.vue";
+import AntdFormView from "./antd/FormView.vue";
 import AntdDrawerView from "./antd/DrawerView.vue";
 import AntdTimelineView from "./antd/TimelineView.vue";
 import AntdCollapseView from "./antd/CollapseView.vue";
@@ -105,6 +109,7 @@ interface ViewMap {
   rate: typeof ElementRateView;
   card: typeof ElementCardView;
   orderCard: typeof ElementOrderCardView;
+  form: typeof ElementFormView;
   drawer: typeof ElementDrawerView;
   timeline: typeof ElementTimelineView;
   collapse: typeof ElementCollapseView;
@@ -123,6 +128,7 @@ const elementViews: ViewMap = {
   rate: ElementRateView,
   card: ElementCardView,
   orderCard: ElementOrderCardView,
+  form: ElementFormView,
   drawer: ElementDrawerView,
   timeline: ElementTimelineView,
   collapse: ElementCollapseView,
@@ -141,6 +147,7 @@ const arcoViews: ViewMap = {
   rate: ArcoRateView,
   card: ArcoCardView,
   orderCard: ArcoOrderCardView,
+  form: ArcoFormView,
   drawer: ArcoDrawerView,
   timeline: ArcoTimelineView,
   collapse: ArcoCollapseView,
@@ -159,6 +166,7 @@ const antdViews: ViewMap = {
   rate: AntdRateView,
   card: AntdCardView,
   orderCard: AntdOrderCardView,
+  form: AntdFormView,
   drawer: AntdDrawerView,
   timeline: AntdTimelineView,
   collapse: AntdCollapseView,
@@ -273,6 +281,10 @@ export function createComponents(lib: UILib): ComponentDefinition[] {
       setup: orderCardSetup,
       component: views.orderCard,
       skeleton: skeletonMap.orderCard,
+    }),
+    defineVueComponent("form", {
+      setup: formSetup,
+      component: views.form,
     }),
     defineVueComponent("drawer", {
       setup: drawerSetup,

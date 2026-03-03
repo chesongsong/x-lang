@@ -138,6 +138,35 @@ html, body {
   flex-shrink: 0;
 }
 
+.toolbar-spacer {
+  flex: 1;
+}
+
+.github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  transition: all 0.15s;
+}
+
+.github-link:hover {
+  background: #f0f3f6;
+  border-color: var(--border);
+}
+
+.github-icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
 .lib-btn {
   padding: 4px 12px;
   font-size: 12px;

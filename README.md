@@ -108,6 +108,12 @@ app.use(myButton);
 - **静态 Demo**：展示所有组件的多种用法（见下方组件列表）。
 - **流式 Demo**：同一份报告内容以流式方式输出，未完成块显示对应组件骨架屏。
 
+### Playground 已支持的 UI 库
+
+- **Element Plus**
+- **Arco Design**
+- **Ant Design Vue**
+
 ## 内置组件一览（Playground 演示）
 
 | 组件 | 说明 | 典型用法 |
@@ -121,8 +127,21 @@ app.use(myButton);
 | **table** | 表格 | `table(用户列表)` 或 `table(用户列表, 姓名, 部门, 薪资)` |
 | **button** | 按钮 | `button(text = "确定", type = "primary", size = "default" \| "small" \| "large", onClick = "提示文案")` |
 | **card** | 卡片 | `card(title = "标题", content = "内容", shadow = "hover" \| "always" \| "never")` |
-| **OrderCard** | 订单详情卡 | `OrderCard(订单)` 或 `OrderCard(订单号 = "…", 状态 = "已支付", 金额 = 99, …)` |
+| **ordercard** | 订单详情卡 | `ordercard(订单)` 或 `ordercard(订单号 = "…", 状态 = "已支付", 金额 = 99, …)` |
+| **form** | 复杂表单 | `form(title = "立项表单", fields = 字段数组, column = 2)` |
 | **result** | 结果页 | `result(title = "完成", subtitle = "说明", type = "success" \| "info" \| "error" \| "warning")` |
+| **drawer** | 抽屉 | `drawer(title = "筛选", content = "…", placement = "right", size = "320px")` |
+| **timeline** | 时间线 | `timeline(里程碑列表)` |
+| **collapse** | 折叠面板 | `collapse(问答列表)` |
+| **dialog** | 对话框 | `dialog(title = "确认", content = "…")` |
+| **linechart** | 折线图 | `linechart(option = {...})` |
+| **areachart** | 面积图 | `areachart(option = {...})` |
+| **barchart** | 柱状图 | `barchart(option = {...})` |
+| **piechart** | 饼图 | `piechart(option = {...})` |
+| **scatterchart** | 散点图 | `scatterchart(option = {...})` |
+| **candlestickchart** | K 线图 | `candlestickchart(option = {...})` |
+| **radarchart** | 雷达图 | `radarchart(option = {...})` |
+| **graphchart** | 关系图 | `graphchart(option = {...})` |
 
 - 数据由 `app.provide()` 注入，如 `用户列表`、`公司信息`、`订单`、`项目进度`、`团队评分` 等，在 \`\`\`x-lang\`\`\` 中直接按变量名使用。
 
