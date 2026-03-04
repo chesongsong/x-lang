@@ -4,7 +4,7 @@ import {
   type Recognizer,
   type ATNSimulator,
 } from "antlr4ng";
-import { ParseError } from "@x-lang/types";
+import { ParseError } from "@x-langjs/types";
 
 export class XLangErrorListener implements ANTLRErrorListener {
   public readonly errors: ParseError[] = [];

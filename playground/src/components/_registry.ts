@@ -1,7 +1,7 @@
 import { createApp } from "vue";
-import { defineComponent } from "@x-lang/core";
-import type { ComponentDefinition } from "@x-lang/core";
-import type { SkeletonContext } from "@x-lang/core";
+import { defineComponent } from "@x-langjs/core";
+import type { ComponentDefinition } from "@x-langjs/core";
+import type { SkeletonContext } from "@x-langjs/core";
 import { defineVueComponent } from "./_define-vue-component.js";
 import {
   buttonSetup,

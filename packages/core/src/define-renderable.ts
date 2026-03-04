@@ -1,8 +1,8 @@
-import type { Expression, CallArgument } from "@x-lang/types";
-import type { BuiltinFunction, Evaluator } from "@x-lang/interpreter";
-import { XRenderCustom } from "@x-lang/interpreter";
-import type { Xvalue } from "@x-lang/interpreter";
-import { Environment, box } from "@x-lang/interpreter";
+import type { Expression, CallArgument } from "@x-langjs/types";
+import type { BuiltinFunction, Evaluator } from "@x-langjs/interpreter";
+import { XRenderCustom } from "@x-langjs/interpreter";
+import type { Xvalue } from "@x-langjs/interpreter";
+import { Environment, box } from "@x-langjs/interpreter";
 
 // ---------------------------------------------------------------------------
 // Public types

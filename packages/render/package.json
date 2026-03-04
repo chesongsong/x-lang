@@ -1,5 +1,5 @@
 {
-  "name": "@x-lang/render",
+  "name": "@x-langjs/render",
   "version": "0.0.2",
   "type": "module",
   "main": "./dist/index.js",
@@ -14,7 +14,7 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@x-lang/interpreter": "workspace:*"
+    "@x-langjs/interpreter": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.0"

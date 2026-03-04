@@ -1,5 +1,5 @@
 {
-  "name": "@x-lang/core",
+  "name": "@x-langjs/core",
   "version": "0.0.2",
   "description": "Core package for x-lang — parse, tokenize, and work with x-lang AST",
   "type": "module",
@@ -19,11 +19,11 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@x-lang/types": "workspace:*",
-    "@x-lang/parser": "workspace:*",
-    "@x-lang/ast": "workspace:*",
-    "@x-lang/interpreter": "workspace:*",
-    "@x-lang/render": "workspace:*",
+    "@x-langjs/types": "workspace:*",
+    "@x-langjs/parser": "workspace:*",
+    "@x-langjs/ast": "workspace:*",
+    "@x-langjs/interpreter": "workspace:*",
+    "@x-langjs/render": "workspace:*",
     "antlr4ng": "^3.0.16"
   }
 }

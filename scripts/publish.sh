@@ -1,16 +1,19 @@
 #!/usr/bin/env bash
-# 本地一键发布脚本：构建 → 更新版本（可选）→ 发布到 npm → 打 tag 并推送（可选，用于触发 GitHub Release）
+# 本地一键发布脚本：构建 → 更新版本（可选）→ 发布到 npm → 打 tag 并推送
 # 使用方式：
-#   ./scripts/publish.sh              # 使用当前 package.json 版本，仅构建并发布到 npm
-#   ./scripts/publish.sh 0.0.2        # 将版本改为 0.0.2，构建、发布 npm、打 tag 并推送
-#   ./scripts/publish.sh 0.0.2 --no-tag   # 只改版本、构建、发布 npm，不打 tag 不推送
-#   ./scripts/publish.sh --dry-run    # 仅构建 + 模拟发布，不真正 publish / 不 git 操作
+#   ./scripts/publish.sh              # 使用当前版本，仅构建并发布到 npm
+#   ./scripts/publish.sh 0.0.2        # 改版本为 0.0.2，构建、发布 npm、打 tag 并推送
+#   ./scripts/publish.sh 0.0.2 --no-tag   # 改版本、构建、发布 npm，不打 tag 不推送
+#   ./scripts/publish.sh --dry-run    # 仅构建，不真正 publish / 不 git 操作
+#
+# 依赖（在 .env 中配置）：
+#   NPM_TOKEN — npmjs.com Classic Automation Token
 
 set -e
 cd "$(dirname "$0")/.."
 ROOT=$(pwd)
 
-# 加载 .env（可选：将 NPM_TOKEN 写在项目根目录 .env 中，勿提交）
+# 加载 .env（将 NPM_TOKEN 写在项目根目录 .env 中，已加入 .gitignore，勿提交）
 if [ -f "$ROOT/.env" ]; then
   set -a
   # shellcheck source=/dev/null
@@ -24,12 +27,12 @@ DRY_RUN=false
 NO_TAG=false
 for arg in "$@"; do
   case "$arg" in
-    --dry-run)   DRY_RUN=true ;;
-    --no-tag)    NO_TAG=true ;;
+    --dry-run) DRY_RUN=true ;;
+    --no-tag)  NO_TAG=true ;;
     -h|--help)
       echo "用法: $0 [版本号] [--dry-run] [--no-tag]"
       echo "  版本号    如 0.0.2，会写入所有 packages/*/package.json 并 commit+tag+push"
-      echo "  --dry-run 只构建、不真正 publish、不 git 操作"
+      echo "  --dry-run 只构建，不真正 publish，不 git 操作"
       echo "  --no-tag  即使给了版本号，也不打 tag、不 push（只发布 npm）"
       exit 0
       ;;
@@ -69,7 +72,7 @@ echo ">>> 安装依赖..."
 pnpm install --frozen-lockfile
 
 echo ">>> 构建 types..."
-pnpm --filter @x-lang/types run build
+pnpm --filter @x-langjs/types run build
 
 echo ">>> 构建全部包（generate + tsc + bundle）..."
 pnpm run build
@@ -77,22 +80,22 @@ pnpm run build
 echo ">>> 构建完成"
 ls -la packages/core/dist/x-lang.min.js 2>/dev/null || { echo "错误: x-lang.min.js 未生成"; exit 1; }
 
-# 3. 发布到 npm
+# 3. 发布到 npmjs.com
 if [ "$DRY_RUN" = true ]; then
   echo ""
   echo ">>> [dry-run] 跳过 npm publish"
 else
   echo ""
-  if [ -z "$NPM_TOKEN" ]; then
-    echo ">>> 发布到 npm（使用当前 npm 登录状态）..."
-    echo "    若遇 403 Two-factor authentication，请改用: NPM_TOKEN=你的token ./scripts/publish.sh ..."
-    pnpm publish -r --no-git-checks --access public
-  else
-    echo ">>> 发布到 npm（使用环境变量 NPM_TOKEN）..."
+  if [ -n "$NPM_TOKEN" ]; then
+    echo ">>> 发布到 npm（使用 .env 中的 NPM_TOKEN）..."
     export NODE_AUTH_TOKEN="$NPM_TOKEN"
-    pnpm publish -r --no-git-checks --access public
+  else
+    echo ">>> 发布到 npm（使用当前 npm 登录状态）..."
+    echo "    若遇 403，请在 .env 中配置 NPM_TOKEN（Classic Automation Token）"
   fi
-  echo ">>> npm 发布完成"
+  pnpm publish -r --no-git-checks --access public
+  echo ">>> npm 发布完成 ✓"
+  echo "    查看: https://www.npmjs.com/package/@x-langjs/core"
 fi
 
 # 4. 若指定了新版本且未 --no-tag，则 commit + tag + push
@@ -100,7 +103,6 @@ if [ -n "$NEW_VERSION" ] && [ "$NO_TAG" = false ] && [ "$DRY_RUN" = false ]; the
   echo ""
   echo ">>> 提交版本变更并打 tag v$NEW_VERSION ..."
   git add packages/*/package.json
-  git status --short
   if git diff --staged --quiet 2>/dev/null; then
     echo "    无 package.json 变更，跳过 commit"
   else
@@ -110,11 +112,10 @@ if [ -n "$NEW_VERSION" ] && [ "$NO_TAG" = false ] && [ "$DRY_RUN" = false ]; the
   echo ">>> 推送 main 与 tag v$NEW_VERSION 到远程（将触发 GitHub Release）..."
   git push origin main
   git push origin "v$NEW_VERSION"
-  echo ""
-  echo ">>> 全部完成。GitHub Actions 将自动创建 Release 并发布到 GitHub Packages。"
+  echo ">>> tag 推送完成 ✓"
 fi
 
 echo ""
 echo "=========================================="
-echo "  发布完成: 版本 $CURRENT_VERSION"
+echo "  发布完成: v$CURRENT_VERSION"
 echo "=========================================="

@@ -1,4 +1,4 @@
-import type { BlockStatement, Expression } from "@x-lang/types";
+import type { BlockStatement, Expression } from "@x-langjs/types";
 import { Xvalue } from "./base.js";
 import type { Environment } from "../environment.js";
 

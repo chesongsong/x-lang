@@ -6,8 +6,8 @@ import {
 import { XLangLexer } from "./generated/XLangLexer.js";
 import { XLangParser } from "./generated/XLangParser.js";
 import type { ProgramContext } from "./generated/XLangParser.js";
-import { LexerError, ParseError } from "@x-lang/types";
-import type { SourceLocation } from "@x-lang/types";
+import { LexerError, ParseError } from "@x-langjs/types";
+import type { SourceLocation } from "@x-langjs/types";
 import { XLangErrorListener } from "./error-listener.js";
 import { AutoSemicolonTokenSource } from "./auto-semicolon.js";
 

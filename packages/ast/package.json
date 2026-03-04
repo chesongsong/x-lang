@@ -1,5 +1,5 @@
 {
-  "name": "@x-lang/ast",
+  "name": "@x-langjs/ast",
   "version": "0.0.2",
   "description": "AST builder and visitor for x-lang",
   "type": "module",
@@ -12,8 +12,8 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@x-lang/types": "workspace:*",
-    "@x-lang/parser": "workspace:*",
+    "@x-langjs/types": "workspace:*",
+    "@x-langjs/parser": "workspace:*",
     "antlr4ng": "^3.0.16"
   }
 }

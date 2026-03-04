@@ -1,5 +1,5 @@
-import type { SimpleSetup, AdvancedSetup, RenderableContext } from "@x-lang/core";
-import { XArray, XObject } from "@x-lang/core";
+import type { SimpleSetup, AdvancedSetup, RenderableContext } from "@x-langjs/core";
+import { XArray, XObject } from "@x-langjs/core";
 
 // Normalize to a safe string for display.
 function coerceText(value: unknown): string {

@@ -1,4 +1,4 @@
-import type { Expression, CallArgument } from "@x-lang/types";
+import type { Expression, CallArgument } from "@x-langjs/types";
 import type { Xvalue } from "../values/base.js";
 import type { Environment } from "../environment.js";
 

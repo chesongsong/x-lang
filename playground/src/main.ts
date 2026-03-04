@@ -1,6 +1,6 @@
 import * as monaco from "monaco-editor";
 import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
-import { XLangApp } from "@x-lang/core";
+import { XLangApp } from "@x-langjs/core";
 import { ElementComponentFactory } from "./renderers/element-factory";
 import { createComponents, type UILib } from "./components/_registry";
 import { registerXLang, createXLangTheme, XLANG_ID } from "./monaco-lang";

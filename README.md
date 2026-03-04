@@ -6,13 +6,13 @@
 
 ```
 ├── packages/
-│   ├── types/       @x-lang/types     — AST 节点类型、错误类、通用类型
-│   ├── parser/      @x-lang/parser     — ANTLR4 语法、词法/语法分析
-│   ├── ast/         @x-lang/ast        — CST→AST 构建、作用域解析、AST 访问
-│   ├── interpreter/ @x-lang/interpreter — 解释执行、Xvalue 值域、内置函数
-│   ├── render/      @x-lang/render     — 渲染引擎、组件工厂抽象、增量 DOM
-│   └── core/        @x-lang/core       — 对外 API（parse / run / XLangApp / defineComponent 等）
-└── playground/      @x-lang/playground — Vite + Vue 演示：Monaco 编辑、多 UI 库切换、流式演示
+│   ├── types/       @x-langjs/types     — AST 节点类型、错误类、通用类型
+│   ├── parser/      @x-langjs/parser     — ANTLR4 语法、词法/语法分析
+│   ├── ast/         @x-langjs/ast        — CST→AST 构建、作用域解析、AST 访问
+│   ├── interpreter/ @x-langjs/interpreter — 解释执行、Xvalue 值域、内置函数
+│   ├── render/      @x-langjs/render     — 渲染引擎、组件工厂抽象、增量 DOM
+│   └── core/        @x-langjs/core       — 对外 API（parse / run / XLangApp / defineComponent 等）
+└── playground/      @x-langjs/playground — Vite + Vue 演示：Monaco 编辑、多 UI 库切换、流式演示
 ```
 
 ## 快速开始（本仓库开发）
@@ -33,15 +33,15 @@ npm run dev
 在任意 Node / 前端项目中安装并引用：
 
 ```bash
-npm install @x-lang/core
+npm install @x-langjs/core
 # 或
-pnpm add @x-lang/core
+pnpm add @x-langjs/core
 ```
 
 **Node / ESM 示例：**
 
 ```javascript
-import { parse, run } from "@x-lang/core";
+import { parse, run } from "@x-langjs/core";
 
 // 仅解析，得到 AST
 const { ast, errors } = parse("a = 1\nb = a + 2\nb");
@@ -61,7 +61,7 @@ console.log(segments);
 **浏览器 / 打包器（Vite、Webpack 等）：**
 
 ```javascript
-import { parse, run, XLangApp } from "@x-lang/core";
+import { parse, run, XLangApp } from "@x-langjs/core";
 
 // 与上面相同，parse / run 可直接使用
 // 完整渲染需自建 ComponentFactory 并 new XLangApp(factory)，见「核心 API」一节
@@ -126,7 +126,7 @@ const { parse, run } = require("./x-lang-0.1.0.cjs");
 ### 解析与执行
 
 ```typescript
-import { parse, run } from "@x-lang/core";
+import { parse, run } from "@x-langjs/core";
 
 const { ast, errors } = parse(`a = 1\nb = a + 2\nb`);
 
@@ -142,7 +142,7 @@ statistic("总数", 10)
 ### Tokenize（高层）
 
 ```typescript
-import { tokenize } from "@x-lang/core";
+import { tokenize } from "@x-langjs/core";
 
 const { tokens, errors } = tokenize(`a = 1`);
 ```
@@ -150,7 +150,7 @@ const { tokens, errors } = tokenize(`a = 1`);
 ### 应用与渲染（XLangApp）
 
 ```typescript
-import { XLangApp } from "@x-lang/core";
+import { XLangApp } from "@x-langjs/core";
 import { ElementComponentFactory } from "./renderers/element-factory"; // 你的工厂
 import { createComponents } from "./components/_registry";            // 你的组件列表
 
@@ -164,7 +164,7 @@ app.run(markdownSource, document.getElementById("output"));
 ### 自定义组件（defineComponent）
 
 ```typescript
-import { defineComponent } from "@x-lang/core";
+import { defineComponent } from "@x-langjs/core";
 
 const myButton = defineComponent("MyButton", {
   setup(args, named) {
@@ -208,25 +208,25 @@ app.on("agentchat", "select", (payload) => {
 ### Renderable（自定义可渲染值）
 
 ```typescript
-import { defineRenderable, XRenderable, XRenderCustom } from "@x-lang/core";
+import { defineRenderable, XRenderable, XRenderCustom } from "@x-langjs/core";
 ```
 
 ### AST 与访问器
 
 ```typescript
-import { ASTBuilder, ScopeResolver, visitNode } from "@x-lang/core";
+import { ASTBuilder, ScopeResolver, visitNode } from "@x-langjs/core";
 ```
 
 ### 解释器与运行时
 
 ```typescript
-import { Interpreter, execute, BuiltinRegistry, Environment } from "@x-lang/core";
+import { Interpreter, execute, BuiltinRegistry, Environment } from "@x-langjs/core";
 ```
 
 ### 低层 Parser
 
 ```typescript
-import { createLexer, parse as parseCST, tokenize as tokenizeRaw, locationFromToken } from "@x-lang/core";
+import { createLexer, parse as parseCST, tokenize as tokenizeRaw, locationFromToken } from "@x-langjs/core";
 ```
 
 ## 渲染架构
@@ -285,7 +285,7 @@ import { createLexer, parse as parseCST, tokenize as tokenizeRaw, locationFromTo
 
 1. **语法生成**：`npm run generate` — 从 `.g4` 生成 Lexer/Parser。
 2. **TypeScript**：`npm run build:ts` — 各 package 的 tsc 编译（含 project references）。
-3. **打包**：`npm run build:bundle` — 使用 esbuild 将 `@x-lang/core` 打成 ESM/CJS。
+3. **打包**：`npm run build:bundle` — 使用 esbuild 将 `@x-langjs/core` 打成 ESM/CJS。
 4. **全量**：`npm run build` = generate + build:ts + build:bundle。
 5. **开发**：`npm run dev` — 先 build 再启动 playground 的 Vite 开发服务。
 

@@ -37,8 +37,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build types first (CI 下确保 @x-lang/types 先有 dist，避免后续包解析失败)
-        run: pnpm --filter @x-lang/types run build
+      - name: Build types first (CI 下确保 @x-langjs/types 先有 dist，避免后续包解析失败)
+        run: pnpm --filter @x-langjs/types run build
 
       - name: Build x-lang (core + packages)
         run: pnpm run build
@@ -47,7 +47,7 @@ jobs:
         env:
           # 部署到 https://<user>.github.io/<repo>/ 时 base 为 /<repo>/
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
-        run: pnpm --filter @x-lang/playground run build
+        run: pnpm --filter @x-langjs/playground run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

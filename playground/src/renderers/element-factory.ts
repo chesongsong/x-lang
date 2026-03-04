@@ -3,7 +3,7 @@ import type {
   ComponentRenderer,
   CodeBlockData,
   PendingData,
-} from "@x-lang/render";
+} from "@x-langjs/render";
 import { MarkdownRenderer } from "./markdown-renderer.js";
 import { CodeBlockRenderer } from "./code-block-renderer.js";
 import { PendingRenderer } from "./pending-renderer.js";

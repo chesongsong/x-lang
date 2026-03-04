@@ -1,5 +1,5 @@
 {
-  "name": "@x-lang/interpreter",
+  "name": "@x-langjs/interpreter",
   "version": "0.0.2",
   "description": "Interpreter for x-lang AST",
   "type": "module",
@@ -12,7 +12,7 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@x-lang/types": "workspace:*",
+    "@x-langjs/types": "workspace:*",
     "dayjs": "^1.11.19"
   }
 }

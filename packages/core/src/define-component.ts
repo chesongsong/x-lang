@@ -4,7 +4,7 @@ import type {
   Disposable,
   PendingData,
   RenderContext,
-} from "@x-lang/render";
+} from "@x-langjs/render";
 import { defineRenderable } from "./define-renderable.js";
 import type {
   RenderableDefinition,

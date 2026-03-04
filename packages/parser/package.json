@@ -1,5 +1,5 @@
 {
-  "name": "@x-lang/parser",
+  "name": "@x-langjs/parser",
   "version": "0.0.2",
   "description": "ANTLR4-based lexer and parser for x-lang",
   "type": "module",
@@ -13,7 +13,7 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@x-lang/types": "workspace:*",
+    "@x-langjs/types": "workspace:*",
     "antlr4ng": "^3.0.16"
   }
 }

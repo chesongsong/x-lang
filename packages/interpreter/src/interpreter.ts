@@ -22,7 +22,7 @@ import type {
   ArrowFunctionExpression,
   CallArgument,
   Parameter,
-} from "@x-lang/types";
+} from "@x-langjs/types";
 import { Environment } from "./environment.js";
 import { Xvalue } from "./values/base.js";
 import { XNumber } from "./values/number.js";

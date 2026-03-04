@@ -26,7 +26,7 @@ import type {
   ObjectExpression,
   ArrowFunctionExpression,
   NamedArgument,
-} from "@x-lang/types";
+} from "@x-langjs/types";
 
 export interface ASTVisitor<R = void> {
   visitProgram(node: Program): R;

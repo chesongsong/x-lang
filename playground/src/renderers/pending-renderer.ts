@@ -1,7 +1,7 @@
 import { createApp, h } from "vue";
 import { ElSkeleton } from "element-plus";
 import "element-plus/es/components/skeleton/style/css";
-import type { ComponentRenderer, Disposable, PendingData } from "@x-lang/render";
+import type { ComponentRenderer, Disposable, PendingData } from "@x-langjs/render";
 
 export class PendingRenderer implements ComponentRenderer<PendingData> {
   render(_data: PendingData, container: HTMLElement): Disposable {

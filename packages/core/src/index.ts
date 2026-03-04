@@ -30,16 +30,16 @@ export type {
   ComponentInstance,
   CodeBlockData,
   PendingData,
-} from "@x-lang/render";
-export { RenderEngine } from "@x-lang/render";
+} from "@x-langjs/render";
+export { RenderEngine } from "@x-langjs/render";
 
 // Event system
 export { EventBus } from "./event-bus.js";
 export type { EventHandler } from "./event-bus.js";
 
 // AST builder, scope resolver & visitor
-export { ASTBuilder, ScopeResolver } from "@x-lang/ast";
-export { type ASTVisitor, visitNode } from "@x-lang/ast";
+export { ASTBuilder, ScopeResolver } from "@x-langjs/ast";
+export { type ASTVisitor, visitNode } from "@x-langjs/ast";
 
 // Value domain — basic types
 export {
@@ -53,10 +53,10 @@ export {
   XFunction,
   XDate,
   box,
-} from "@x-lang/interpreter";
+} from "@x-langjs/interpreter";
 
 // Renderables — UI-renderable value types
-export { XRenderable, XRenderCustom } from "@x-lang/interpreter";
+export { XRenderable, XRenderCustom } from "@x-langjs/interpreter";
 
 // Renderable definition API
 export { defineRenderable } from "./define-renderable.js";
@@ -68,21 +68,21 @@ export type {
 } from "./define-renderable.js";
 
 // Interpreter & execution
-export { Interpreter, execute } from "@x-lang/interpreter";
+export { Interpreter, execute } from "@x-langjs/interpreter";
 export type {
   ExecuteOptions,
   ScopeResult,
   OutputSegment,
   MarkdownSegment,
   ScopeSegment,
-} from "@x-lang/interpreter";
+} from "@x-langjs/interpreter";
 
 // Builtins
-export { BuiltinRegistry } from "@x-lang/interpreter";
-export type { BuiltinFunction, Evaluator } from "@x-lang/interpreter";
+export { BuiltinRegistry } from "@x-langjs/interpreter";
+export type { BuiltinFunction, Evaluator } from "@x-langjs/interpreter";
 
 // Environment
-export { Environment } from "@x-lang/interpreter";
+export { Environment } from "@x-langjs/interpreter";
 
 // All AST types
 export type {
@@ -131,7 +131,7 @@ export type {
   ArrowFunctionExpression,
   Expression,
   Node,
-} from "@x-lang/types";
+} from "@x-langjs/types";
 
 // Errors
 export {
@@ -139,7 +139,7 @@ export {
   LexerError,
   ParseError,
   ASTBuildError,
-} from "@x-lang/types";
+} from "@x-langjs/types";
 
 // Low-level parser access
 export {
@@ -149,5 +149,5 @@ export {
   parse as parseCST,
   tokenize as tokenizeRaw,
   locationFromToken,
-} from "@x-lang/parser";
-export type { ParseResult, TokenInfo } from "@x-lang/parser";
+} from "@x-langjs/parser";
+export type { ParseResult, TokenInfo } from "@x-langjs/parser";

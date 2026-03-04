@@ -1,5 +1,5 @@
-import type { OutputSegment } from "@x-lang/interpreter";
-import { Xvalue, XRenderable, XArray } from "@x-lang/interpreter";
+import type { OutputSegment } from "@x-langjs/interpreter";
+import { Xvalue, XRenderable, XArray } from "@x-langjs/interpreter";
 import type {
   ComponentFactory,
   ComponentHandle,

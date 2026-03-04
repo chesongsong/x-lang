@@ -3,9 +3,9 @@ import type {
   ComponentRenderer,
   CodeBlockData,
   PendingData,
-} from "@x-lang/render";
-import { RenderEngine } from "@x-lang/render";
-import type { ComponentInstance } from "@x-lang/render";
+} from "@x-langjs/render";
+import { RenderEngine } from "@x-langjs/render";
+import type { ComponentInstance } from "@x-langjs/render";
 import { run } from "./xlang.js";
 import type { ComponentDefinition } from "./define-component.js";
 import { EventBus } from "./event-bus.js";

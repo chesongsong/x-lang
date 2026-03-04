@@ -1,11 +1,11 @@
 import { createApp, reactive, type Component } from "vue";
-import { defineComponent } from "@x-lang/core";
+import { defineComponent } from "@x-langjs/core";
 import type {
   ComponentDefinition,
   ComponentOptions,
   SkeletonContext,
-} from "@x-lang/core";
-import type { RenderContext } from "@x-lang/render";
+} from "@x-langjs/core";
+import type { RenderContext } from "@x-langjs/render";
 
 export const XLANG_CTX_KEY = "xlang-ctx";
 

@@ -1,4 +1,4 @@
-import type { ComponentRenderer, Disposable } from "@x-lang/render";
+import type { ComponentRenderer, Disposable } from "@x-langjs/render";
 import MarkdownIt from "markdown-it";
 
 const md = new MarkdownIt({

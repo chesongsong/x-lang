@@ -42,7 +42,7 @@ import { Interpreter } from "./interpreter.js";
 import { Environment } from "./environment.js";
 import { box } from "./values/index.js";
 import type { BuiltinFunction } from "./builtins/registry.js";
-import type { Program } from "@x-lang/types";
+import type { Program } from "@x-langjs/types";
 import type { ScopeResult } from "./segments.js";
 
 export interface ExecuteOptions {

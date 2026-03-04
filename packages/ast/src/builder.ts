@@ -1,5 +1,5 @@
 import { ParserRuleContext, type Token } from "antlr4ng";
-import { XLangParser } from "@x-lang/parser";
+import { XLangParser } from "@x-langjs/parser";
 import type {
   Program,
   ScopeBlock,
@@ -29,8 +29,8 @@ import type {
   TypeAnnotationNode,
   NamedArgument,
   CallArgument,
-} from "@x-lang/types";
-import { ASTBuildError } from "@x-lang/types";
+} from "@x-langjs/types";
+import { ASTBuildError } from "@x-langjs/types";
 
 function loc(ctx: ParserRuleContext): SourceLocation {
   const start = ctx.start!;

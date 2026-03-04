@@ -15,7 +15,7 @@ import type {
   Identifier,
   CallArgument,
   Property,
-} from "@x-lang/types";
+} from "@x-langjs/types";
 
 export class ScopeResolver {
   private scopeStack: Set<string>[] = [];

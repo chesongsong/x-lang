@@ -30,6 +30,6 @@
 
 - Node ≥ 20，pnpm workspaces。
 - 根目录：`pnpm install` → `pnpm run build` → `pnpm run dev` 启动 Playground。
-- 集成：通过 `@x-lang/core` 的 `parse`、`run`、`XLangApp`、`defineComponent` 等 API 接入自有项目。
+- 集成：通过 `@x-langjs/core` 的 `parse`、`run`、`XLangApp`、`defineComponent` 等 API 接入自有项目。
 
 [0.0.1]: https://github.com/chesongsong/x-lang/releases/tag/v0.0.1

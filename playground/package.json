@@ -1,5 +1,5 @@
 {
-  "name": "@x-lang/playground",
+  "name": "@x-langjs/playground",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -12,8 +12,8 @@
     "dayjs": "^1.11.19",
     "@arco-design/web-vue": "^2.57.0",
     "@vitejs/plugin-vue": "^6.0.4",
-    "@x-lang/core": "workspace:*",
-    "@x-lang/render": "workspace:*",
+    "@x-langjs/core": "workspace:*",
+    "@x-langjs/render": "workspace:*",
     "ant-design-vue": "^4.2.6",
     "echarts": "^5.5.1",
     "element-plus": "^2.13.2",

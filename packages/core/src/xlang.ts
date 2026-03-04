@@ -1,13 +1,13 @@
 import {
   parse as parseCST,
   tokenize as lexTokenize,
-} from "@x-lang/parser";
-import type { TokenInfo } from "@x-lang/parser";
-import { ASTBuilder, ScopeResolver } from "@x-lang/ast";
-import { execute } from "@x-lang/interpreter";
-import type { OutputSegment, ExecuteOptions, BuiltinFunction } from "@x-lang/interpreter";
-import type { Program } from "@x-lang/types";
-import { ParseError } from "@x-lang/types";
+} from "@x-langjs/parser";
+import type { TokenInfo } from "@x-langjs/parser";
+import { ASTBuilder, ScopeResolver } from "@x-langjs/ast";
+import { execute } from "@x-langjs/interpreter";
+import type { OutputSegment, ExecuteOptions, BuiltinFunction } from "@x-langjs/interpreter";
+import type { Program } from "@x-langjs/types";
+import { ParseError } from "@x-langjs/types";
 import { SourceSplitter } from "./splitter.js";
 import type { RenderableDefinition } from "./define-renderable.js";
 

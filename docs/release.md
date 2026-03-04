@@ -36,7 +36,7 @@ cp .env.example .env
 1. 推送版本 tag（如 `v0.1.0`）到仓库后，GitHub Actions 会触发 **Release** 工作流。
 2. 工作流会执行：安装依赖 → 构建 types → 构建 core 与各包 → 构建 playground。
 3. 将 **playground 静态产物** 打成 `playground-<version>.zip`，并上传到该 tag 对应的 **GitHub Release**。
-4. 将 **@x-lang/* 各包**（types、parser、ast、interpreter、render、core）按 tag 版本号发布到 **npm**。
+4. 将 **@x-langjs/* 各包**（types、parser、ast、interpreter、render、core）按 tag 版本号发布到 **npm**。
 5. Release 的正文会从 `CHANGELOG.md` 中截取当前版本的段落作为发行说明。
 
 ## 发布前：配置 npm Token
@@ -66,7 +66,7 @@ git push origin v0.1.0
 等待 Actions 跑完后：
 
 - **GitHub Releases** 页面会看到新版本、附件 `playground-v0.1.0.zip` 以及从 `CHANGELOG.md` 截取的发行说明。
-- **npm** 上会发布 `@x-lang/types`、`@x-lang/parser`、`@x-lang/ast`、`@x-lang/interpreter`、`@x-lang/render`、`@x-lang/core`（需已配置 `NPM_TOKEN`）。
+- **npm** 上会发布 `@x-langjs/types`、`@x-langjs/parser`、`@x-langjs/ast`、`@x-langjs/interpreter`、`@x-langjs/render`、`@x-langjs/core`（需已配置 `NPM_TOKEN`）。
 
 ## 后续版本
 

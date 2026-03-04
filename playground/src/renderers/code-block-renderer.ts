@@ -1,4 +1,4 @@
-import type { ComponentRenderer, Disposable, CodeBlockData } from "@x-lang/render";
+import type { ComponentRenderer, Disposable, CodeBlockData } from "@x-langjs/render";
 
 export class CodeBlockRenderer implements ComponentRenderer<CodeBlockData> {
   render(data: CodeBlockData, container: HTMLElement): Disposable {
