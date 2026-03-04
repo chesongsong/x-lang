@@ -1,6 +1,35 @@
-# x-lang
+# x-langjs
 
-基于 ANTLR4 与 TypeScript 实现的领域语言，支持在 Markdown 中嵌入 \`\`\`x-lang\`\`\` 代码块，解析执行后将代码块交给可插拔的渲染引擎（如 Vue + 任意 UI 库）展示为自定义组件。
+基于 ANTLR4 与 TypeScript 实现的领域语言，支持在 Markdown 中嵌入 \`\`\`x-langjs\`\`\` 代码块，解析执行后将代码块交给可插拔的渲染引擎（如 Vue + 任意 UI 库）展示为自定义组件。
+
+An ANTLR4 + TypeScript DSL runtime that executes \`\`\`x-langjs\`\`\` blocks inside Markdown and renders results through a pluggable UI layer.
+
+## Language / 语言
+
+- 中文：见下方完整说明
+- English quick start: see `## English`
+
+## English
+
+- Install: `npm install @x-langjs/core`
+- Basic use:
+  - Use:
+    ```ts
+    import { parse, run } from "@x-langjs/core";
+    const parsed = parse("a = 1");
+    const executed = run("```x-langjs\na = 1\n```");
+    console.log(parsed.errors, executed.segments);
+    ```
+  - Prebuilt files: `x-langjs-<version>.min.js`, `x-langjs-<version>.esm.mjs`, `x-langjs-<version>.cjs`
+  - Subpackage docs:
+    - `packages/core/README.md`
+    - `packages/types/README.md`
+    - `packages/parser/README.md`
+    - `packages/ast/README.md`
+    - `packages/interpreter/README.md`
+    - `packages/render/README.md`
+
+## 中文
 
 ## 项目结构
 
@@ -47,10 +76,10 @@ import { parse, run } from "@x-langjs/core";
 const { ast, errors } = parse("a = 1\nb = a + 2\nb");
 console.log(errors.length ? errors : ast);
 
-// 解析并执行（支持 Markdown 内嵌 ```x-lang``` 块）
+// 解析并执行（支持 Markdown 内嵌 ```x-langjs``` 块）
 const { segments, errors: runErrors } = run(`
 # 报表
-\`\`\`x-lang
+\`\`\`x-langjs
 total = 100
 total
 \`\`\`
@@ -69,30 +98,30 @@ import { parse, run, XLangApp } from "@x-langjs/core";
 
 ### 方式二：通过产物文件使用
 
-不依赖 npm，直接下载构建好的单文件引入项目。从 [GitHub Releases](https://github.com/chesongsong/x-lang/releases) 下载对应版本的文件：
+不依赖 npm，直接下载构建好的单文件引入项目。从 [GitHub Releases](https://github.com/chesongsong/x-langjs/releases) 下载对应版本的文件：
 
 | 文件 | 说明 |
 |------|------|
-| `x-lang-<version>.min.js` | **浏览器 IIFE 版**，单文件无外部依赖，通过 `<script>` 引入，暴露全局 `XLang` |
-| `x-lang-<version>.mjs` | ESM 版，适合浏览器 `<script type="module">` 或打包器 |
-| `x-lang-<version>.cjs` | CJS 版，适合 Node.js `require()` |
+| `x-langjs-<version>.min.js` | **浏览器 IIFE 版**，单文件无外部依赖，通过 `<script>` 引入，暴露全局 `XLang` |
+| `x-langjs-<version>.mjs` | ESM 版，适合浏览器 `<script type="module">` 或打包器 |
+| `x-langjs-<version>.cjs` | CJS 版，适合 Node.js `require()` |
 
 **浏览器 `<script>` 直接引入（推荐体验用）：**
 
 ```html
 <!-- 从 Releases 下载后放到项目目录 -->
-<script src="x-lang-0.0.2.min.js"></script>
+<script src="x-langjs-0.0.2.min.js"></script>
 <script>
   const { parse, run } = XLang;
 
-  // 解析 x-lang 代码
+  // 解析 x-langjs 代码
   const { ast, errors } = parse("a = 1\nb = a + 2\nb");
   console.log(errors.length ? errors : ast);
 
-  // 执行含 Markdown 的文档（```x-lang 块会被执行）
+  // 执行含 Markdown 的文档（```x-langjs 块会被执行）
   const { segments } = run(`
 # 报表
-\`\`\`x-lang
+\`\`\`x-langjs
 total = 100
 total
 \`\`\`
@@ -106,19 +135,19 @@ total
 
 ```javascript
 // ESM
-import { parse, run } from "./x-lang-0.0.2.esm.mjs";
+import { parse, run } from "./x-langjs-0.0.2.esm.mjs";
 
 // CJS
-const { parse, run } = require("./x-lang-0.0.2.cjs");
+const { parse, run } = require("./x-langjs-0.0.2.cjs");
 ```
 
 ## 语言特性
 
 - **无声明关键字**：直接写 `apple = 3`，未定义则视为定义，已定义则视为赋值。
 - **作用域**：支持多个程序段落（scope），彼此独立，可同名变量。
-- **Markdown 混合**：仅 \`\`\`x-lang ... \`\`\` 内的内容参与执行与自定义渲染；其余按 Markdown 输出。
+- **Markdown 混合**：仅 \`\`\`x-langjs ... \`\`\` 内的内容参与执行与自定义渲染；其余按 Markdown 输出。
 - **命名参数**：如 `button(text = "确定", type = "primary")`，支持懒求值与 `自己` 关键字。
-- **类型与值**：Xvalue 体系（XNumber、XString、XBool、XNull、XArray、XObject、XFunction、XDate），`box` / `unbox` 用于 JS 与 x-lang 值互转。
+- **类型与值**：Xvalue 体系（XNumber、XString、XBool、XNull、XArray、XObject、XFunction、XDate），`box` / `unbox` 用于 JS 与 x-langjs 值互转。
 - **表达式**：四则运算、比较、逻辑、成员访问、下标、数组/对象字面量、函数调用等；支持 ASI（自动分号插入）。
 
 ## 核心 API
@@ -132,7 +161,7 @@ const { ast, errors } = parse(`a = 1\nb = a + 2\nb`);
 
 const { segments, errors: runErrors } = run(`
 # 标题
-\`\`\`x-lang
+\`\`\`x-langjs
 statistic("总数", 10)
 \`\`\`
 `, { variables: { 总数: 10 } });
@@ -182,7 +211,7 @@ app.use(myButton);
 
 - **简单组件**：`setup` 为函数 `(args, named) => data`。
 - **高级组件**：`setup` 为 `{ execute(ctx): data }`，可访问 AST、作用域等（如 table 列推断）。
-- 支持 **Vue SFC**：通过 `defineVueComponent(name, { setup, component, skeleton })` 将 Vue 组件包装为 x-lang 组件。
+- 支持 **Vue SFC**：通过 `defineVueComponent(name, { setup, component, skeleton })` 将 Vue 组件包装为 x-langjs 组件。
 
 ### 事件与 UI↔JS 通信
 
@@ -237,7 +266,7 @@ import { createLexer, parse as parseCST, tokenize as tokenizeRaw, locationFromTo
 
 ## Playground
 
-- **左侧**：Monaco 编辑器，x-lang 语法高亮；提供「流式演示」模拟 AI 逐字输出。
+- **左侧**：Monaco 编辑器，x-langjs 语法高亮；提供「流式演示」模拟 AI 逐字输出。
 - **右侧**：渲染结果；顶部可切换 **Element Plus** / **Arco Design** / **Ant Design**，切换后立即用当前库重新渲染。
 - **静态 Demo**：展示所有组件的多种用法（见下方组件列表）。
 - **流式 Demo**：同一份报告内容以流式方式输出，未完成块显示对应组件骨架屏。
@@ -279,7 +308,7 @@ import { createLexer, parse as parseCST, tokenize as tokenizeRaw, locationFromTo
 | **radarchart** | 雷达图 | `radarchart(option = {...})` |
 | **graphchart** | 关系图 | `graphchart(option = {...})` |
 
-- 数据由 `app.provide()` 注入，如 `用户列表`、`公司信息`、`订单`、`项目进度`、`团队评分` 等，在 \`\`\`x-lang\`\`\` 中直接按变量名使用。
+- 数据由 `app.provide()` 注入，如 `用户列表`、`公司信息`、`订单`、`项目进度`、`团队评分` 等，在 \`\`\`x-langjs\`\`\` 中直接按变量名使用。
 
 ## 构建与脚本
 

@@ -27,7 +27,7 @@ createXLangTheme();
 // 1. App / components / data
 // ---------------------------------------------------------------------------
 
-/** Demo 数据已写在各 \`\`\`x-lang\`\`\` 块内，此处仅注入必要变量。 */
+/** Demo 数据已写在各 \`\`\`x-langjs\`\`\` 块内，此处仅注入必要变量。 */
 const sharedData: Record<string, unknown> = {
   当前时间: new Date("2026-02-28T14:30:00"),
 };

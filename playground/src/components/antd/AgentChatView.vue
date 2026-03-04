@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { computed, inject, ref } from "vue";
 import { Button as AButton } from "ant-design-vue";
-import type { RenderContext } from "@x-lang/render";
+import type { RenderContext } from "@x-langjs/render";
 import { XLANG_CTX_KEY } from "../_define-vue-component.js";
 
 interface OptionItem {

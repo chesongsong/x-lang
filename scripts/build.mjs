@@ -31,8 +31,8 @@ async function main() {
     outfile: path.join(CORE_DIST, "index.cjs"),
   });
 
-  // 浏览器可直接引入的单文件，通过 <script src="x-lang.min.js"> 暴露全局 XLang
-  console.log("==> Bundling standalone (x-lang.min.js)...");
+  // 浏览器可直接引入的单文件，通过 <script src="x-langjs.min.js"> 暴露全局 XLang
+  console.log("==> Bundling standalone (x-langjs.min.js)...");
   await build({
     entryPoints: [CORE_SRC],
     bundle: true,
@@ -43,7 +43,7 @@ async function main() {
     minify: true,
     sourcemap: true,
     logLevel: "info",
-    outfile: path.join(CORE_DIST, "x-lang.min.js"),
+    outfile: path.join(CORE_DIST, "x-langjs.min.js"),
     define: {
       "process.env.NODE_ENV": '"production"',
     },

@@ -6,7 +6,7 @@ export interface RawSegment {
   readonly language?: string;
 }
 
-const XLANG_LANGUAGES = new Set(["x-lang", "xlang", "x"]);
+const XLANG_LANGUAGES = new Set(["x-langjs", "xlang", "x"]);
 
 export class SourceSplitter {
   split(source: string): RawSegment[] {

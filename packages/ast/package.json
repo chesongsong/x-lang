@@ -1,12 +1,13 @@
 {
   "name": "@x-langjs/ast",
   "version": "0.0.3",
-  "description": "AST builder and visitor for x-lang",
+  "description": "AST builder and visitor for x-langjs",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "build": "tsc --build"
@@ -15,5 +16,13 @@
     "@x-langjs/types": "workspace:*",
     "@x-langjs/parser": "workspace:*",
     "antlr4ng": "^3.0.16"
-  }
+  },
+  "keywords": [
+    "x-langjs",
+    "xlang",
+    "ast",
+    "visitor",
+    "scope",
+    "dsl"
+  ]
 }

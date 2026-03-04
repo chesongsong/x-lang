@@ -1,7 +1,7 @@
 {
   "name": "@x-langjs/core",
   "version": "0.0.3",
-  "description": "Core package for x-lang — parse, tokenize, and work with x-lang AST",
+  "description": "Core package for x-langjs — parse, tokenize, and work with x-langjs AST",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -25,5 +25,14 @@
     "@x-langjs/interpreter": "workspace:*",
     "@x-langjs/render": "workspace:*",
     "antlr4ng": "^3.0.16"
-  }
+  },
+  "keywords": [
+    "x-langjs",
+    "xlang",
+    "antlr4",
+    "dsl",
+    "parser",
+    "interpreter",
+    "renderer"
+  ]
 }

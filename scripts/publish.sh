@@ -45,7 +45,7 @@ for arg in "$@"; do
 done
 
 echo "=========================================="
-echo "  x-lang 本地发布脚本"
+echo "  x-langjs 本地发布脚本"
 echo "=========================================="
 
 # 1. 若指定了新版本，更新所有 packages/*/package.json
@@ -78,7 +78,7 @@ echo ">>> 构建全部包（generate + tsc + bundle）..."
 pnpm run build
 
 echo ">>> 构建完成"
-ls -la packages/core/dist/x-lang.min.js 2>/dev/null || { echo "错误: x-lang.min.js 未生成"; exit 1; }
+ls -la packages/core/dist/x-langjs.min.js 2>/dev/null || { echo "错误: x-langjs.min.js 未生成"; exit 1; }
 
 # 3. 发布到 npmjs.com
 if [ "$DRY_RUN" = true ]; then

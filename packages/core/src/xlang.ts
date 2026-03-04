@@ -78,7 +78,7 @@ export function run(source: string, options?: RunOptions): RunOutput {
     if (seg.type === "pending") {
       outputSegments.push({
         type: "pending",
-        language: seg.language ?? "x-lang",
+        language: seg.language ?? "x-langjs",
         content: seg.content,
       });
       continue;

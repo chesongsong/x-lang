@@ -3,8 +3,8 @@
 本文件面向 AI 开发协作者，概述仓库目标、架构、关键入口与修改规范。
 
 ## 仓库定位
-- 这是一个基于 ANTLR4 + TypeScript 的 DSL 语言项目（x-lang），支持在 Markdown 中嵌入 `x-lang` 代码块。
-- 运行时会解析 Markdown，将 `x-lang` 代码块执行后交给渲染引擎输出为 UI 组件。
+- 这是一个基于 ANTLR4 + TypeScript 的 DSL 语言项目（x-langjs），支持在 Markdown 中嵌入 `x-langjs` 代码块。
+- 运行时会解析 Markdown，将 `x-langjs` 代码块执行后交给渲染引擎输出为 UI 组件。
 - Playground 是核心验证场景：左侧编辑器，右侧渲染结果，支持多 UI 库切换与流式演示。
 
 ## 核心架构
@@ -24,7 +24,7 @@
 - Demo 内容：`playground/src/demo-content.ts`
 
 ## 组件体系（Playground）
-- 组件通过 `defineVueComponent` 注册为 x-lang 组件。
+- 组件通过 `defineVueComponent` 注册为 x-langjs 组件。
 - 每个 UI 库对应一套 Vue 组件实现：
   - `playground/src/components/element/*`
   - `playground/src/components/arco/*`
@@ -42,7 +42,7 @@
 - 适用于 Agent 与用户交互的结果回传。
 
 ## 语法与格式约定
-- x-lang 支持 Markdown 中的 ```x-lang``` 代码块。
+- x-langjs 支持 Markdown 中的 ```x-langjs``` 代码块。
 - Demo 内容必须放入模板字符串中，并用 `\`\`\`` 形式转义反引号。
 - 变量命名支持中文，建议在 demo 中优先中文变量以便展示。
 

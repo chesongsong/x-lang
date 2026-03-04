@@ -22,7 +22,7 @@
 import { computed, inject, ref } from "vue";
 import { ElButton } from "element-plus";
 import "element-plus/es/components/button/style/css";
-import type { RenderContext } from "@x-lang/render";
+import type { RenderContext } from "@x-langjs/render";
 import { XLANG_CTX_KEY } from "../_define-vue-component.js";
 
 interface OptionItem {

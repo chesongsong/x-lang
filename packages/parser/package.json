@@ -1,12 +1,13 @@
 {
   "name": "@x-langjs/parser",
   "version": "0.0.3",
-  "description": "ANTLR4-based lexer and parser for x-lang",
+  "description": "ANTLR4-based lexer and parser for x-langjs",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "generate": "antlr-ng -Dlanguage=TypeScript -v -o src/generated --exact-output-dir grammar/XLangLexer.g4 grammar/XLangParser.g4",
@@ -15,5 +16,14 @@
   "dependencies": {
     "@x-langjs/types": "workspace:*",
     "antlr4ng": "^3.0.16"
-  }
+  },
+  "keywords": [
+    "x-langjs",
+    "xlang",
+    "antlr4",
+    "antlr4ng",
+    "lexer",
+    "parser",
+    "dsl"
+  ]
 }

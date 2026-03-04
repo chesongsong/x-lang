@@ -22,7 +22,7 @@
 import { computed, inject, ref } from "vue";
 import { Button as AButton } from "@arco-design/web-vue";
 import "@arco-design/web-vue/es/button/style/css.js";
-import type { RenderContext } from "@x-lang/render";
+import type { RenderContext } from "@x-langjs/render";
 import { XLANG_CTX_KEY } from "../_define-vue-component.js";
 
 interface OptionItem {

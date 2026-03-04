@@ -1,12 +1,13 @@
 {
   "name": "@x-langjs/interpreter",
   "version": "0.0.3",
-  "description": "Interpreter for x-lang AST",
+  "description": "Interpreter for x-langjs AST",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "build": "tsc --build"
@@ -14,5 +15,13 @@
   "dependencies": {
     "@x-langjs/types": "workspace:*",
     "dayjs": "^1.11.19"
-  }
+  },
+  "keywords": [
+    "x-langjs",
+    "xlang",
+    "interpreter",
+    "runtime",
+    "evaluator",
+    "dsl"
+  ]
 }

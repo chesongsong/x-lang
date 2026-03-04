@@ -18,5 +18,18 @@
   },
   "devDependencies": {
     "typescript": "^5.7.0"
-  }
+  },
+  "keywords": [
+    "x-langjs",
+    "xlang",
+    "renderer",
+    "component",
+    "markdown",
+    "dsl"
+  ],
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "description": "Rendering engine abstractions and default engine for x-langjs outputs"
 }

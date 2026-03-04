@@ -1,14 +1,23 @@
 {
   "name": "@x-langjs/types",
   "version": "0.0.3",
-  "description": "TypeScript type definitions for x-lang AST, tokens, and errors",
+  "description": "TypeScript type definitions for x-langjs AST, tokens, and errors",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "build": "tsc --build"
-  }
+  },
+  "keywords": [
+    "x-langjs",
+    "xlang",
+    "dsl",
+    "typescript",
+    "ast",
+    "types"
+  ]
 }
