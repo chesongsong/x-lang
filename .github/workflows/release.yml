@@ -12,9 +12,6 @@ on:
 permissions:
   contents: write
 
-env:
-  NODE_VERSION: "20"
-
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -28,32 +25,19 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: "20"
           cache: "pnpm"
           registry-url: "https://registry.npmjs.org"
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build types first
-        run: pnpm --filter @x-lang/types run build
-
-      - name: Build x-lang (core + packages)
-        run: pnpm run build
-
-      - name: Build playground
-        env:
-          VITE_BASE_PATH: "./"
-        run: pnpm --filter @x-lang/playground run build
-
-      - name: Set version from tag
-        id: version
+      # 从 tag 提取版本号，并同步写入各包 package.json，后续步骤均可使用 $VERSION / $VERSION_NPM
+      - name: Extract version from tag
         run: |
           VERSION="${GITHUB_REF#refs/tags/}"
-          VERSION_NO_V="${VERSION#v}"
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "VERSION_NPM=$VERSION_NO_V" >> $GITHUB_ENV
-          export VERSION_NPM="$VERSION_NO_V"
+          VERSION_NPM="${VERSION#v}"
+          echo "VERSION=$VERSION"         >> $GITHUB_ENV
+          echo "VERSION_NPM=$VERSION_NPM" >> $GITHUB_ENV
+          echo "Detected version: $VERSION (npm: $VERSION_NPM)"
+          export VERSION_NPM
           for f in packages/*/package.json; do
             node -e "
               const fs = require('fs');
@@ -62,40 +46,60 @@ jobs:
               fs.writeFileSync('$f', JSON.stringify(p, null, 2) + '\n');
             "
           done
-          echo "Set all package versions to $VERSION_NO_V"
+          echo "All packages updated to $VERSION_NPM"
 
-      - name: Prepare release assets
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build types first
+        run: pnpm --filter @x-lang/types run build
+
+      # 包含 antlr-ng generate + tsc + esbuild (index.mjs / index.cjs / x-lang.min.js)
+      - name: Build x-lang core & packages
+        run: pnpm run build
+
+      - name: Verify build artifacts
         run: |
-          cd playground/dist && zip -r "../../playground-$VERSION.zip" . && cd ../..
+          echo "=== Core dist ===" && ls -lh packages/core/dist/
+          test -f packages/core/dist/x-lang.min.js || (echo "ERROR: x-lang.min.js not found" && exit 1)
+
+      - name: Prepare release artifacts
+        run: |
           mkdir -p release-artifacts
-          mv "playground-$VERSION.zip" release-artifacts/
+          cp packages/core/dist/x-lang.min.js     "release-artifacts/x-lang-${VERSION_NPM}.min.js"
+          cp packages/core/dist/x-lang.min.js.map "release-artifacts/x-lang-${VERSION_NPM}.min.js.map" 2>/dev/null || true
+          cp packages/core/dist/index.mjs         "release-artifacts/x-lang-${VERSION_NPM}.mjs"
+          cp packages/core/dist/index.cjs         "release-artifacts/x-lang-${VERSION_NPM}.cjs"
+          echo "=== Release artifacts ===" && ls -lh release-artifacts/
 
       - name: Read changelog for release body
         run: |
-          VERSION_NO_V="${{ env.VERSION_NPM }}"
-          VERSION_ESC=$(printf '%s' "$VERSION_NO_V" | sed 's/\./\\./g')
+          VERSION_ESC=$(printf '%s' "${VERSION_NPM}" | sed 's/\./\\./g')
           if [ -f CHANGELOG.md ]; then
             sed -n "/^## \[${VERSION_ESC}\]/,/^## /p" CHANGELOG.md | sed '$d' > release-body.md 2>/dev/null || true
           fi
           if [ ! -s release-body.md ]; then
-            echo "## 发行说明" > release-body.md
-            echo "" >> release-body.md
-            echo "详见 [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/CHANGELOG.md)。" >> release-body.md
+            printf "## 发行说明\n\n详见 [CHANGELOG.md](https://github.com/%s/blob/%s/CHANGELOG.md)。\n" \
+              "${{ github.repository }}" "${{ github.ref_name }}" > release-body.md
           fi
+          echo "--- Release body ---" && cat release-body.md
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.ref_name }}
           body_path: release-body.md
-          files: release-artifacts/*
+          files: |
+            release-artifacts/x-lang-*.min.js
+            release-artifacts/x-lang-*.mjs
+            release-artifacts/x-lang-*.cjs
           generate_release_notes: false
           draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish to npm
+        if: ${{ secrets.NPM_TOKEN != '' }}
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
-          pnpm publish -r --no-git-checks --access public
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm publish -r --no-git-checks --access public

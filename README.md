@@ -69,32 +69,48 @@ import { parse, run, XLangApp } from "@x-lang/core";
 
 ### 方式二：通过产物文件使用
 
-不通过 npm，直接使用构建好的文件。
+不依赖 npm，直接下载构建好的单文件引入项目。从 [GitHub Releases](https://github.com/chesongsong/x-lang/releases) 下载对应版本的文件：
 
-**1. 使用 Playground 静态包（推荐体验）**
+| 文件 | 说明 |
+|------|------|
+| `x-lang-<version>.min.js` | **浏览器 IIFE 版**，单文件无外部依赖，通过 `<script>` 引入，暴露全局 `XLang` |
+| `x-lang-<version>.mjs` | ESM 版，适合浏览器 `<script type="module">` 或打包器 |
+| `x-lang-<version>.cjs` | CJS 版，适合 Node.js `require()` |
 
-从 [GitHub Releases](https://github.com/chesongsong/x-lang/releases) 下载对应版本的 `playground-<版本>.zip`，解压后用任意静态服务器打开，或直接双击 `index.html`（部分功能需同源或本地服务器）。
+**浏览器 `<script>` 直接引入（推荐体验用）：**
 
-```bash
-# 示例：解压后用 npx 起一个静态服务
-unzip playground-v0.1.0.zip -d playground-dist
-cd playground-dist && npx serve . -p 3000
-# 浏览器打开 http://localhost:3000
+```html
+<!-- 从 Releases 下载后放到项目目录 -->
+<script src="x-lang-0.1.0.min.js"></script>
+<script>
+  const { parse, run } = XLang;
+
+  // 解析 x-lang 代码
+  const { ast, errors } = parse("a = 1\nb = a + 2\nb");
+  console.log(errors.length ? errors : ast);
+
+  // 执行含 Markdown 的文档（```x-lang 块会被执行）
+  const { segments } = run(`
+# 报表
+\`\`\`x-lang
+total = 100
+total
+\`\`\`
+  `);
+  console.log(segments);
+  // 将 segments 渲染到 DOM 需自建 ComponentFactory，见「核心 API」章节
+</script>
 ```
 
-**2. 在本仓库构建后引用 dist**
-
-若已克隆本仓库并执行过 `npm run build`，可直接从 `packages/core/dist` 引用 ESM/CJS：
+**Node.js / 打包器（无需 npm 安装，直接引用文件）：**
 
 ```javascript
-// ESM（如浏览器 <script type="module"> 或 Node 的 import）
-import { parse, run } from "./path/to/x-lang/packages/core/dist/index.mjs";
+// ESM
+import { parse, run } from "./x-lang-0.1.0.mjs";
 
-// CJS（Node require）
-const { parse, run } = require("./path/to/x-lang/packages/core/dist/index.cjs");
+// CJS
+const { parse, run } = require("./x-lang-0.1.0.cjs");
 ```
-
-需保证运行环境能解析 `packages/core` 的依赖（如 `antlr4ng`）；若希望单文件、无额外依赖，可关注后续提供的 standalone 构建。
 
 ## 语言特性
 
