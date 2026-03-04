@@ -15,7 +15,7 @@
 └── playground/      @x-lang/playground — Vite + Vue 演示：Monaco 编辑、多 UI 库切换、流式演示
 ```
 
-## 快速开始
+## 快速开始（本仓库开发）
 
 （项目使用 pnpm workspaces，也可用 npm 安装。）
 
@@ -25,6 +25,76 @@ npm run build
 # 启动 Playground 演示
 npm run dev
 ```
+
+## 使用方式
+
+### 方式一：通过 npm 使用
+
+在任意 Node / 前端项目中安装并引用：
+
+```bash
+npm install @x-lang/core
+# 或
+pnpm add @x-lang/core
+```
+
+**Node / ESM 示例：**
+
+```javascript
+import { parse, run } from "@x-lang/core";
+
+// 仅解析，得到 AST
+const { ast, errors } = parse("a = 1\nb = a + 2\nb");
+console.log(errors.length ? errors : ast);
+
+// 解析并执行（支持 Markdown 内嵌 ```x-lang``` 块）
+const { segments, errors: runErrors } = run(`
+# 报表
+\`\`\`x-lang
+total = 100
+total
+\`\`\`
+`, { variables: {} });
+console.log(segments);
+```
+
+**浏览器 / 打包器（Vite、Webpack 等）：**
+
+```javascript
+import { parse, run, XLangApp } from "@x-lang/core";
+
+// 与上面相同，parse / run 可直接使用
+// 完整渲染需自建 ComponentFactory 并 new XLangApp(factory)，见「核心 API」一节
+```
+
+### 方式二：通过产物文件使用
+
+不通过 npm，直接使用构建好的文件。
+
+**1. 使用 Playground 静态包（推荐体验）**
+
+从 [GitHub Releases](https://github.com/chesongsong/x-lang/releases) 下载对应版本的 `playground-<版本>.zip`，解压后用任意静态服务器打开，或直接双击 `index.html`（部分功能需同源或本地服务器）。
+
+```bash
+# 示例：解压后用 npx 起一个静态服务
+unzip playground-v0.1.0.zip -d playground-dist
+cd playground-dist && npx serve . -p 3000
+# 浏览器打开 http://localhost:3000
+```
+
+**2. 在本仓库构建后引用 dist**
+
+若已克隆本仓库并执行过 `npm run build`，可直接从 `packages/core/dist` 引用 ESM/CJS：
+
+```javascript
+// ESM（如浏览器 <script type="module"> 或 Node 的 import）
+import { parse, run } from "./path/to/x-lang/packages/core/dist/index.mjs";
+
+// CJS（Node require）
+const { parse, run } = require("./path/to/x-lang/packages/core/dist/index.cjs");
+```
+
+需保证运行环境能解析 `packages/core` 的依赖（如 `antlr4ng`）；若希望单文件、无额外依赖，可关注后续提供的 standalone 构建。
 
 ## 语言特性
 

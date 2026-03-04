@@ -1,0 +1,101 @@
+# 在推送版本 tag（如 v0.1.0）时构建产物、发布到 GitHub Release，并发布 @x-lang/* 到 npm
+# 使用方式：git tag v0.1.0 && git push origin v0.1.0
+# 需在仓库 Settings → Secrets 中配置 NPM_TOKEN（npm 的 Automation 或 Classic Token）
+
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build types first
+        run: pnpm --filter @x-lang/types run build
+
+      - name: Build x-lang (core + packages)
+        run: pnpm run build
+
+      - name: Build playground
+        env:
+          VITE_BASE_PATH: "./"
+        run: pnpm --filter @x-lang/playground run build
+
+      - name: Set version from tag
+        id: version
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/}"
+          VERSION_NO_V="${VERSION#v}"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "VERSION_NPM=$VERSION_NO_V" >> $GITHUB_ENV
+          export VERSION_NPM="$VERSION_NO_V"
+          for f in packages/*/package.json; do
+            node -e "
+              const fs = require('fs');
+              const p = JSON.parse(fs.readFileSync('$f', 'utf8'));
+              p.version = process.env.VERSION_NPM;
+              fs.writeFileSync('$f', JSON.stringify(p, null, 2) + '\n');
+            "
+          done
+          echo "Set all package versions to $VERSION_NO_V"
+
+      - name: Prepare release assets
+        run: |
+          cd playground/dist && zip -r "../../playground-$VERSION.zip" . && cd ../..
+          mkdir -p release-artifacts
+          mv "playground-$VERSION.zip" release-artifacts/
+
+      - name: Read changelog for release body
+        run: |
+          VERSION_NO_V="${{ env.VERSION_NPM }}"
+          VERSION_ESC=$(printf '%s' "$VERSION_NO_V" | sed 's/\./\\./g')
+          if [ -f CHANGELOG.md ]; then
+            sed -n "/^## \[${VERSION_ESC}\]/,/^## /p" CHANGELOG.md | sed '$d' > release-body.md 2>/dev/null || true
+          fi
+          if [ ! -s release-body.md ]; then
+            echo "## 发行说明" > release-body.md
+            echo "" >> release-body.md
+            echo "详见 [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/CHANGELOG.md)。" >> release-body.md
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release-body.md
+          files: release-artifacts/*
+          generate_release_notes: false
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to npm
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+          pnpm publish -r --no-git-checks --access public
