@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# 本地一键发布脚本：构建 → 更新版本（可选）→ 发布到 npm → 打 tag 并推送
+# 本地一键发布脚本：构建 → 更新版本（可选）→ 发布到 npm → 自动 commit + tag + push
 # 使用方式：
-#   ./scripts/publish.sh              # 使用当前版本，仅构建并发布到 npm
-#   ./scripts/publish.sh 0.0.2        # 改版本为 0.0.2，构建、发布 npm、打 tag 并推送
-#   ./scripts/publish.sh 0.0.2 --no-tag   # 改版本、构建、发布 npm，不打 tag 不推送
+#   ./scripts/publish.sh              # 自动将当前版本 patch + 1（如 0.0.2 -> 0.0.3），再发布
+#   ./scripts/publish.sh 0.0.2        # 手动指定版本号并发布
+#   ./scripts/publish.sh 0.0.2 --no-tag   # 发布 npm，但不做 commit/tag/push
 #   ./scripts/publish.sh --dry-run    # 仅构建，不真正 publish / 不 git 操作
 #
 # 依赖（在 .env 中配置）：
@@ -31,9 +31,9 @@ for arg in "$@"; do
     --no-tag)  NO_TAG=true ;;
     -h|--help)
       echo "用法: $0 [版本号] [--dry-run] [--no-tag]"
-      echo "  版本号    如 0.0.2，会写入所有 packages/*/package.json 并 commit+tag+push"
+      echo "  版本号    如 0.0.2，会写入所有 packages/*/package.json"
       echo "  --dry-run 只构建，不真正 publish，不 git 操作"
-      echo "  --no-tag  即使给了版本号，也不打 tag、不 push（只发布 npm）"
+      echo "  --no-tag  发布 npm 后不做 commit/tag/push"
       exit 0
       ;;
     *)
@@ -48,25 +48,57 @@ echo "=========================================="
 echo "  x-langjs 本地发布脚本"
 echo "=========================================="
 
-# 1. 若指定了新版本，更新所有 packages/*/package.json
+# 1. 计算目标版本（未指定则自动 patch + 1）
+# 以子包发布版本为基准（core），避免根 package.json 的版本与子包版本体系不一致
+BASE_VERSION=$(node -e "console.log(require('./packages/core/package.json').version)")
 if [ -n "$NEW_VERSION" ]; then
-  echo ">>> 将版本更新为 $NEW_VERSION"
-  for f in packages/*/package.json; do
+  TARGET_VERSION="$NEW_VERSION"
+  echo ">>> 使用手动指定版本: $TARGET_VERSION"
+else
+  TARGET_VERSION=$(node -e "
+    const v = process.argv[1];
+    const m = v.match(/^(\\d+)\\.(\\d+)\\.(\\d+)$/);
+    if (!m) {
+      console.error('根 package.json 版本号不是 x.y.z 格式: ' + v);
+      process.exit(1);
+    }
+    const major = Number(m[1]);
+    const minor = Number(m[2]);
+    const patch = Number(m[3]) + 1;
+    console.log([major, minor, patch].join('.'));
+  " "$BASE_VERSION")
+  echo ">>> 未指定版本号，自动 patch + 1: $BASE_VERSION -> $TARGET_VERSION"
+fi
+
+# 2. 将目标版本写入整个项目（根包 + playground + 所有子包）
+echo ">>> 同步版本到所有 package.json: $TARGET_VERSION"
+for f in package.json playground/package.json packages/*/package.json; do
+  if [ -f "$f" ]; then
     node -e "
       const fs = require('fs');
       const p = JSON.parse(fs.readFileSync('$f', 'utf8'));
-      p.version = '$NEW_VERSION';
+      p.version = '$TARGET_VERSION';
       fs.writeFileSync('$f', JSON.stringify(p, null, 2) + '\n');
     "
     echo "    已更新 $f"
-  done
-  CURRENT_VERSION="$NEW_VERSION"
-else
-  CURRENT_VERSION=$(node -e "console.log(require('./packages/core/package.json').version)")
-  echo ">>> 使用当前版本: $CURRENT_VERSION"
+  fi
+done
+CURRENT_VERSION="$TARGET_VERSION"
+
+# 提前计算发布 tag，并在发布前检查是否冲突
+RELEASE_TAG="v$CURRENT_VERSION"
+if [ "$NO_TAG" = false ] && [ "$DRY_RUN" = false ]; then
+  if git rev-parse "$RELEASE_TAG" >/dev/null 2>&1; then
+    echo "错误: 本地已存在 tag $RELEASE_TAG，请先更换版本号后重试。"
+    exit 1
+  fi
+  if git ls-remote --exit-code --tags origin "refs/tags/$RELEASE_TAG" >/dev/null 2>&1; then
+    echo "错误: 远程已存在 tag $RELEASE_TAG，请先更换版本号后重试。"
+    exit 1
+  fi
 fi
 
-# 2. 安装依赖并构建
+# 3. 安装依赖并构建
 echo ""
 echo ">>> 安装依赖..."
 pnpm install --no-frozen-lockfile
@@ -80,7 +112,7 @@ pnpm run build
 echo ">>> 构建完成"
 ls -la packages/core/dist/x-langjs.min.js 2>/dev/null || { echo "错误: x-langjs.min.js 未生成"; exit 1; }
 
-# 3. 发布到 npmjs.com
+# 4. 发布到 npmjs.com
 if [ "$DRY_RUN" = true ]; then
   echo ""
   echo ">>> [dry-run] 跳过 npm publish"
@@ -98,20 +130,20 @@ else
   echo "    查看: https://www.npmjs.com/package/@x-langjs/core"
 fi
 
-# 4. 若指定了新版本且未 --no-tag，则 commit + tag + push
-if [ -n "$NEW_VERSION" ] && [ "$NO_TAG" = false ] && [ "$DRY_RUN" = false ]; then
+# 5. 默认自动 commit + tag + push（除非 --no-tag 或 --dry-run）
+if [ "$NO_TAG" = false ] && [ "$DRY_RUN" = false ]; then
   echo ""
-  echo ">>> 提交版本变更并打 tag v$NEW_VERSION ..."
-  git add packages/*/package.json
+  echo ">>> 自动提交版本变更并打 tag $RELEASE_TAG ..."
+  git add package.json playground/package.json packages/*/package.json pnpm-lock.yaml package-lock.json
   if git diff --staged --quiet 2>/dev/null; then
-    echo "    无 package.json 变更，跳过 commit"
+    echo "    无需提交的版本文件变更，跳过 commit"
   else
-    git commit -m "chore: release v$NEW_VERSION"
+    git commit -m "chore: release $RELEASE_TAG"
   fi
-  git tag -f "v$NEW_VERSION"
-  echo ">>> 推送 main 与 tag v$NEW_VERSION 到远程（将触发 GitHub Release）..."
+  git tag "$RELEASE_TAG"
+  echo ">>> 推送 main 与 tag $RELEASE_TAG 到远程（将触发 GitHub Release）..."
   git push origin main
-  git push origin "v$NEW_VERSION"
+  git push origin "$RELEASE_TAG"
   echo ">>> tag 推送完成 ✓"
 fi
 
