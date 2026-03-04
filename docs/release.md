@@ -16,7 +16,18 @@ pnpm run publish:local           # 等同于 ./scripts/publish.sh
 pnpm run publish:local -- 0.0.2  # 带参数需用 -- 分隔
 ```
 
-**发布前**：若未配置 `NPM_TOKEN` 环境变量，需先在本机执行 `npm login` 登录 npm。
+**发布前**：npm 要求使用 **Access Token** 或已开启**两步验证**的账号。推荐在项目根目录用 `.env` 配置 Token（已加入 .gitignore，不会提交）：
+
+```bash
+# 1. 复制示例并编辑，填入 npm Token
+cp .env.example .env
+# 编辑 .env，设置 NPM_TOKEN=你的token
+
+# 2. 执行发布
+./scripts/publish.sh 0.0.2
+```
+
+也可临时指定：`NPM_TOKEN="你的token" ./scripts/publish.sh 0.0.2`
 
 ---
 

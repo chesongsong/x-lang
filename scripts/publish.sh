@@ -10,6 +10,14 @@ set -e
 cd "$(dirname "$0")/.."
 ROOT=$(pwd)
 
+# 加载 .env（可选：将 NPM_TOKEN 写在项目根目录 .env 中，勿提交）
+if [ -f "$ROOT/.env" ]; then
+  set -a
+  # shellcheck source=/dev/null
+  source "$ROOT/.env"
+  set +a
+fi
+
 # 解析参数
 NEW_VERSION=""
 DRY_RUN=false
@@ -77,7 +85,7 @@ else
   echo ""
   if [ -z "$NPM_TOKEN" ]; then
     echo ">>> 发布到 npm（使用当前 npm 登录状态）..."
-    echo "    若未登录请先执行: npm login"
+    echo "    若遇 403 Two-factor authentication，请改用: NPM_TOKEN=你的token ./scripts/publish.sh ..."
     pnpm publish -r --no-git-checks --access public
   else
     echo ">>> 发布到 npm（使用环境变量 NPM_TOKEN）..."

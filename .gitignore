@@ -16,3 +16,7 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Local env (npm token 等，勿提交)
+.env
+.env.local
