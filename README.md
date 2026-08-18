@@ -1,3 +1,5 @@
+
+
 # x-langjs
 
 [中文](README.zh.md)
@@ -198,7 +200,7 @@ Download from GitHub Releases:
 - `x-langjs-<version>.cjs` (CommonJS)
 
 ```html
-<script src="x-langjs-0.0.4.min.js"></script>
+<script src="x-langjs-0.0.5.min.js"></script>
 <script>
   const { XLangApp, defineComponent } = XLang;
   const app = new XLangApp();
